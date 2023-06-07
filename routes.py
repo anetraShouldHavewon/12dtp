@@ -1,4 +1,5 @@
 from flask import Flask
+import sqlite3
 
 app = Flask(__name__)
 
@@ -25,3 +26,6 @@ def to_watch_list():
 
 @app.route("/watched_list")
 def watched_list():
+
+if __name__ == "__main__":
+    app.run(debug = True)
