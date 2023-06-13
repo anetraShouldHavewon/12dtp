@@ -8,19 +8,28 @@ app = Flask(__name__)
 def home():
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
-
+    
+    #functions#
     #getting a list of agenre ids from a list of names of genres
-    genre_list = ["Horro", "Romance", "Martial Arts"]
-    genre_id_list = []
-    for genre_name in genre_list:
-        genre_name = genre_name.title()
-        genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name,)).fetchone()
-        if genre_id == None:
-            print("genre_name is invalid")  #test print line
-        else:
-            genre_id = genre_id[0]
-            genre_id_list.append(genre_id)
-    print(genre_id_list)    #another test print line
+    def genre_id_from_genre_name(genre_list):
+        genre_id_list = []
+        for genre_name in genre_list:
+            genre_name = genre_name.title()
+            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name,)).fetchone()
+            if genre_id == None:
+                print("genre_name is invalid")  #test print line
+                genre_list.remove(genre_name)
+            else:
+                genre_id = genre_id[0]
+                genre_id_list.append(genre_id)
+
+        genre_dict = {
+            "genre_list" : genre_list,
+            "genre_id_list": genre_id_list, 
+        }  
+
+        return genre_dict
+          
 
     #getting a list of movie ids and their namesfrom a list of genre ids
     #getting movie_ids from a genre_id
@@ -39,6 +48,11 @@ def home():
             movie_names_list.append(movie_name[0])
         return movie_names_list
     
+    #variables
+    genre_list = ["Horro", "Romance", "Martial Arts"]
+    genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
+    genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
+
     movie_id_dict = {}
     movie_names_dict = {}
 
