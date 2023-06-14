@@ -49,7 +49,7 @@ def home():
         return movie_names_list
     
     #variables
-    genre_list = ["Horro", "Romance", "Martial Arts"]
+    genre_list =  ["romance", "horor"]
     genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
     genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
 
