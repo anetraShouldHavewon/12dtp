@@ -13,24 +13,28 @@ def home():
     #getting a list of agenre ids from a list of names of genres
     def genre_id_from_genre_name(genre_list):
         genre_id_list = []
+        new_genre_list = []
+
         for genre_name in genre_list:
-            genre_name = genre_name.title()
-            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name,)).fetchone()
+            print(genre_name)
+            genre_name_db = genre_name.title()
+            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name_db,)).fetchone()
             if genre_id == None:
-                print("genre_name is invalid")  #test print line
-                genre_list.remove(genre_name)
+                print("{} is invalid".format(genre_name_db))  #test print line
             else:
+                print("{} is valid".format(genre_name_db))  #test print line
+                new_genre_list.append(genre_name_db)
                 genre_id = genre_id[0]
                 genre_id_list.append(genre_id)
 
+
         genre_dict = {
-            "genre_list" : genre_list,
+            "genre_list" : new_genre_list,
             "genre_id_list": genre_id_list, 
         }  
 
         return genre_dict
           
-
     #getting a list of movie ids and their namesfrom a list of genre ids
     #getting movie_ids from a genre_id
     def movie_id_from_genre_id(genre_id):
@@ -49,7 +53,7 @@ def home():
         return movie_names_list
     
     #variables
-    genre_list =  ["romance", "horor"]
+    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
     genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
     genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
 
@@ -65,8 +69,19 @@ def home():
 
     return render_template("home.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict)
 
-#@app.route("/movie_info/<int:id>")
-#def movie_info(id):
+@app.route("/movie_info/<int:id>")
+def movie_info(id):
+    conn = sqlite3.connect("Movie_Database_1.db")
+    cur = conn.cursor()
+
+    #variables
+    movie_info = cur.execute("SELECT * FROM Movie WHERE id = ?",(id,)).fetchone()[1]
+
+    title = movie_info[1]
+    release_year = movie_info[2]
+
+    return render_template("movie_info.html",movie_info = movie_info)
+
 
 #@app.route("/explore")
 #def explore():
