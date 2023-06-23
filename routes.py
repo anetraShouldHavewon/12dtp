@@ -75,9 +75,9 @@ def movie_info(id):
     cur = conn.cursor()
     
     #functions#
-    def person_name_stage_name_from_person_id(movie_people):
+    def person_name_list_from_person_id_list(movie_people_id):
         people_list = []
-        for people in movie_people:
+        for people in movie_people_id:
             person_id = people[0]
             person_first_name = cur.execute("SELECT first_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
             person_last_name = cur.execute("SELECT last_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
@@ -86,52 +86,39 @@ def movie_info(id):
 
         return people_list
         
-    def stage_name_from_person_id(person_name, person_id):
+    def stage_name_from_person_id(person_id):
         stage_name = cur.execute("SELECT stage_name FROM Stage_Name WHERE id = ?",(person_id,)).fetchone()
         if stage_name != None:
             stage_name = stage_name[0]
 
-            stage_name_dict = {
-                person_name: stage_name
-            }
-            return stage_name_dict
-        
-    def type_of_person_from_person_id(movie_people):
-        for person in movie_people:
-            person_type_id = person[2]
-            person_type = cur.execute("SELECT name FROM Type_of_Person WHERE id = ?",(person_type_id,)).fetchone()[0]
-            return person_type
+            return stage_name
 
     #queries#
-    movie_info = cur.execute("SELECT * FROM Movie WHERE id = ?",(id,)).fetchone()
-    movie_people = cur.execute("SELECT * FROM Movie_People WHERE movie_id = ?", (id,)).fetchall()
-    people_list = person_name_stage_name_from_person_id(movie_people)
-    for person in people_list:
-        
-
-    #variables#
-    title = movie_info[1]
-    release_year = movie_info[2]
-    audience_ratings = movie_info[3]
-    use_of_tropes_rating = movie_info[4]
-    use_of_tropes_description = movie_info[5]
-    moral_ambiguity_rating = movie_info[6]
-    moral_ambiguity_description = movie_info[7]
-    film_rating = movie_info[8]
-    length = movie_info[9]
-    poster = movie_info[10]
     
-    def stage_name_from_person_id(people_list, movie_people):
-        stage_name_dict = {}
-        for people in people_list:
-            index = people_list.index(people)
-            person_id = movie_people[index][0]
-            stage_name = cur.execute("SELECT stage_name FROM Stage_Name WHERE id = ?",(person_id,)).fetchone()
-            if stage_name != None:
-                stage_name = stage_name[0]
+    movie_info = cur.execute("SELECT * FROM Movie WHERE id = ?",(id,)).fetchone()
+    movie_people_id = cur.execute("SELECT * FROM Movie_People WHERE movie_id = ?", (id,)).fetchall()
+    
+    #variables#
+    #people-info#
+    stage_name_dict = {}
+    directors_list = []
+    actors_list = []
 
+    people_list = person_name_list_from_person_id_list(movie_people_id)
+    for person in people_list:
+        person_name = person
+        person_id = movie_people_id[people_list.index(person)][1]
+        person_type_id = movie_people_id[people_list.index(person)][2]
 
-    return render_template("movie_info.html",movie_info = movie_info)
+        stage_name = stage_name_from_person_id(person_id)
+        stage_name_dict[person_name] = stage_name
+        
+        if person_type_id == 1:
+            actors_list.append(person_name)
+        elif person_type_id == 2: 
+            directors_list.append(person_name)
+
+    return render_template("movie_info.html", movie_info = movie_info, stage_names = stage_name_dict, directors_list = directors_list, actors_list = actors_list)
 
 
 #@app.route("/explore")
