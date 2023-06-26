@@ -121,9 +121,75 @@ def movie_info(id):
     return render_template("movie_info.html", movie_info = movie_info, stage_names = stage_name_dict, directors_list = directors_list, actors_list = actors_list)
 
 
-#@app.route("/explore")
-#def explore():
+@app.route("/explore")
+def explore():
+    conn = sqlite3.connect("Movie_Database_1.db")
+    cur = conn.cursor()
+    
+    #functions/queries#
+    #getting a list of genre ids from a list of names of genres
+    def genre_id_from_genre_name(genre_list):
+        genre_id_list = []
+        new_genre_list = []
 
+        for genre_name in genre_list:
+            print(genre_name)
+            genre_name_db = genre_name.title()
+            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name_db,)).fetchone()
+            if genre_id == None:
+                print("{} is invalid".format(genre_name_db))  #test print line
+            else:
+                print("{} is valid".format(genre_name_db))  #test print line
+                new_genre_list.append(genre_name_db)
+                genre_id = genre_id[0]
+                genre_id_list.append(genre_id)
+
+
+        genre_dict = {
+            "genre_list" : new_genre_list,
+            "genre_id_list": genre_id_list, 
+        }  
+
+        return genre_dict
+
+    #getting a list of movie ids and their names from a list of genre ids
+    #getting movie_ids from a genre_id
+    def movie_id_from_genre_id(genre_id):
+        movie_id_list = []
+        movie_ids = cur.execute("SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",(genre_id,)).fetchall()
+        for movie_id in range(len(movie_ids)):
+            movie_id_list.append(movie_ids[movie_id][0])
+        return movie_id_list
+
+    #getting movie names from movie_ids
+    def movie_name_from_genre_id(movie_id_list):
+        movie_names_list = []
+        for movie_id in movie_id_list:
+            movie_name = cur.execute("SELECT title FROM Movie WHERE id = ?",(movie_id,)).fetchone()
+            movie_names_list.append(movie_name[0])
+        return movie_names_list
+    
+    #variables
+    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
+    genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
+    genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
+
+    movie_id_dict = {}
+    movie_names_dict = {}
+    genre_descriptions = {}
+    
+    for id in range(len(genre_id_list)):
+        genre_id = genre_id_list[id]
+        genre_description = cur.execute("SELECT description FROM Genre WHERE id = ?",(genre_id,))
+        genre_descriptions[genre_list[id]] = genre_description
+        movie_id_list = movie_id_from_genre_id(genre_id)
+        movie_id_dict[genre_list[id]] = movie_id_list
+        movie_name_list = movie_name_from_genre_id(movie_id_list)
+        movie_names_dict[genre_list[id]] = movie_name_list
+
+    return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions)
+
+    
 #@app.route("/quiz_question/<int:question_num")
 #def quiz_question(question_num):
 
