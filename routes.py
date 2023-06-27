@@ -78,7 +78,7 @@ def movie_info(id):
     def person_name_list_from_person_id_list(movie_people_id):
         people_list = []
         for people in movie_people_id:
-            person_id = people[0]
+            person_id = people[1]
             person_first_name = cur.execute("SELECT first_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
             person_last_name = cur.execute("SELECT last_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
             person_name = person_first_name + " " + person_last_name
@@ -96,7 +96,7 @@ def movie_info(id):
     #queries#
     movie_info = cur.execute("SELECT * FROM Movie WHERE id = ?",(id,)).fetchone()
     movie_people_id = cur.execute("SELECT * FROM Movie_People WHERE movie_id = ?", (id,)).fetchall()
-    
+
     #variables#
     #people-info#
     stage_name_dict = {}
