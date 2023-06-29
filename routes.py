@@ -185,13 +185,13 @@ def explore():
     movie_id_dict = {}
     movie_names_dict = {}
     genre_descriptions = {}
-    genre_movie_ids = {}
+    genre_movie_rtr = {}
     
     for id in range(len(genre_id_list)):
         genre_id = genre_id_list[id]
         genre_name = genre_list[id]
-        genre_description = cur.execute("SELECT description FROM Genre WHERE id = ?",(genre_id,))
-        genre_descriptions[genre_name] = genre_description
+        genre_description = cur.execute("SELECT description FROM Genre WHERE id = ?",(genre_id,)).fetchone()
+        genre_descriptions[genre_name] = genre_description[0]
         movie_id_list = movie_id_from_genre_id(genre_id)
         movie_id_dict[genre_name] = movie_id_list
         movie_name_list = movie_name_from_movie_id(movie_id_list)
@@ -199,10 +199,10 @@ def explore():
         #getting rotten tomatoes rating of each movie
         one_genre_movies_rtr = {}
         for movie_id in movie_id_list:
-            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE id = ?",(movie_id,))
+            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE id = ?",(movie_id,)).fetchone()
             index = movie_id_list.index(movie_id)
-            one_genre_movies_rtr[movie_name_list[index]] = rtr
-        genre_movie_ids[genre_name] = one_genre_movies_rtr
+            one_genre_movies_rtr[movie_name_list[index]] = rtr[0]
+        genre_movie_rtr[genre_name] = one_genre_movies_rtr
 
     #getting movies released recently(in 2022 or 2023)
     release_year = [2022,2023]
@@ -214,16 +214,14 @@ def explore():
         index = release_year.index(year)
         year_dict = list_of_year_dicts[index]
         movie_id_list = movie_ids_from_release_year(year)
-        year_dict["movie_id_list"] = movie_id_list
         movie_name_list = movie_name_from_movie_id(movie_id_list)
-        year_dict["movie_name_list"] = movie_name_list
         movie_rtr = {}
         movie_poster = {}
         for name in movie_name_list:
-            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE name = ?",(name,))
-            movie_rtr[name] = rtr
-            poster = cur.execute("SELECT film_poster FROM Movie WHERE name = ?", (name,))
-            movie_poster[name] = poster
+            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE title = ?",(name,)).fetchone()
+            movie_rtr[name] = rtr[0]
+            poster = cur.execute("SELECT film_poster FROM Movie WHERE title = ?", (name,)).fetchone()
+            movie_poster[name] = poster[0]
 
         year_dict = {
             "movie_id_list": movie_id_list,
@@ -232,7 +230,7 @@ def explore():
             "movie_posters": movie_poster
         }
 
-    return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
+    return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
 
     
 #@app.route("/quiz_question/<int:question_num")
