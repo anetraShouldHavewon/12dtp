@@ -1,8 +1,16 @@
 from flask import Flask, render_template
 import sqlite3
-
+conn = sqlite3.connect("Movie_Database_1.db")
+cur = conn.cursor()
+    
 app = Flask(__name__)
 
+def movie_posters_list_from_movie_id_list(movie_id_list):
+        movie_poster_list = []
+        for movie_id in movie_id_list:
+            movie_poster = cur.execute("SELECT film_poster FROM Movie WHERE id =?",(movie_id,)).fetchone()[0]
+            movie_poster_list.append(movie_poster)
+        return movie_poster_list
 #homepage
 @app.route("/home")
 def home():
@@ -43,7 +51,7 @@ def home():
         for movie_id in range(len(movie_ids)):
             movie_id_list.append(movie_ids[movie_id][0])
         return movie_id_list
-
+    
     #getting movie names from movie_ids
     def movie_name_from_genre_id(movie_id_list):
         movie_names_list = []
@@ -52,6 +60,7 @@ def home():
             movie_names_list.append(movie_name[0])
         return movie_names_list
     
+    
     #variables
     genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
     genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
@@ -59,6 +68,7 @@ def home():
 
     movie_id_dict = {}
     movie_names_dict = {}
+    movie_posters_dict = {}
 
     for id in range(len(genre_id_list)):
         genre_id = genre_id_list[id]
@@ -66,8 +76,10 @@ def home():
         movie_id_dict[genre_list[id]] = movie_id_list
         movie_name_list = movie_name_from_genre_id(movie_id_list)
         movie_names_dict[genre_list[id]] = movie_name_list
+        movie_posters_list = movie_posters_list_from_movie_id_list(movie_id_list)
+        movie_posters_dict[genre_list[id]] = movie_posters_list
 
-    return render_template("home.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict)
+    return render_template("home.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, movie_posters = movie_posters_dict)
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
@@ -215,6 +227,8 @@ def explore():
         year_dict = list_of_year_dicts[index]
         movie_id_list = movie_ids_from_release_year(year)
         movie_name_list = movie_name_from_movie_id(movie_id_list)
+        year_dict["movie_id_list"] = movie_id_list
+        year_dict["movie_name_list"] = movie_name_list
         movie_rtr = {}
         movie_poster = {}
         for name in movie_name_list:
@@ -223,12 +237,9 @@ def explore():
             poster = cur.execute("SELECT film_poster FROM Movie WHERE title = ?", (name,)).fetchone()
             movie_poster[name] = poster[0]
 
-        year_dict = {
-            "movie_id_list": movie_id_list,
-            "movie_name_list" : movie_name_list,
-            "movie ratings": movie_rtr,
-            "movie_posters": movie_poster
-        }
+        year_dict["movie ratings"] = movie_rtr
+        year_dict["movie_posters"] = movie_poster
+      
 
     return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
 
