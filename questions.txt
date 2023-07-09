@@ -1,0 +1,33 @@
+Question 1:
+What age range are you in?
+a. Under 10
+b. 10~13
+c. 15~18
+d. 18+
+
+Question 2:
+Recent or old cinema?
+a. Only movies made in this century
+b. 70s~90s
+c. Old Hollywood!
+d. Don't really mind
+
+Question 3:
+How long should your movie be?
+a. Less than one hour
+b. One to two hours
+c. Two to three hours
+d. Forever
+
+Question 5:
+What are you into? (Pick all that apply)
+a. Horror
+b. Comedy
+c. Sci-Fi/Fantasy
+d. Animation
+e. Western
+f. Thriller
+g. Romance
+h. Martial Arts
+i. Documentary
+j. Drama

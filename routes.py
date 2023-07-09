@@ -1,16 +1,8 @@
 from flask import Flask, render_template
 import sqlite3
-conn = sqlite3.connect("Movie_Database_1.db")
-cur = conn.cursor()
-    
+
 app = Flask(__name__)
 
-def movie_posters_list_from_movie_id_list(movie_id_list):
-        movie_poster_list = []
-        for movie_id in movie_id_list:
-            movie_poster = cur.execute("SELECT film_poster FROM Movie WHERE id =?",(movie_id,)).fetchone()[0]
-            movie_poster_list.append(movie_poster)
-        return movie_poster_list
 #homepage
 @app.route("/home")
 def home():
@@ -60,6 +52,12 @@ def home():
             movie_names_list.append(movie_name[0])
         return movie_names_list
     
+    def movie_posters_list_from_movie_id_list(movie_id_list):
+        movie_poster_list = []
+        for movie_id in movie_id_list:
+            movie_poster = cur.execute("SELECT film_poster FROM Movie WHERE id =?",(movie_id,)).fetchone()[0]
+            movie_poster_list.append(movie_poster)
+        return movie_poster_list
     
     #variables
     genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
@@ -244,20 +242,12 @@ def explore():
     return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
 
     
-#@app.route("/quiz_question/<int:question_num")
-#def quiz_question(question_num):
+@app.route("/quiz_question/<int:question_num>")
+def quiz_question(question_num):
+    return render_template("questions.html")
 
 #@app.route("/quiz_results")
 #def quiz_results():
-
-#@app.route("/my_watchlist")
-#def my_watchlist():
-
-#@app.route("/to_watch_list")
-#def to_watch_list():
-
-#@app.route("/watched_list")
-#def watched_list():
 
 if __name__ == "__main__":
     app.run(debug = True)
