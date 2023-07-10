@@ -244,7 +244,7 @@ def explore():
     
 @app.route("/quiz_question/<int:question_num>")
 def quiz_question(question_num):
-    return render_template("questions.html")
+    return render_template("questions.html", question_num = question_num)
 
 #@app.route("/quiz_results")
 #def quiz_results():

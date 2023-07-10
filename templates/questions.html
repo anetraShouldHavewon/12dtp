@@ -7,20 +7,10 @@
     <hr>
     <div class = "quiz_container">
         <h2 id = "question">Question</h2>
+        <div class = "answers" id = "answers">
         <ul>
-            <li>
-                <button class = "answer" id = "answer">Option1</button>
-            </li>
-            <li>
-                <button class = "answer" id = "answer">Option2</button>
-            </li>
-            <li>
-                <button class = "answer" id = "answer">Option3</button>
-            </li>
-            <li>
-                <button class = "answer" id = "answer">Option4</button>
-            </li>
         </ul>
+        </div>
         <div class = "back">
             <h2 id = "back-arrow">BACK &#8606;</h2>
         </div>
@@ -36,4 +26,10 @@
             <input type = "checkbox" id = "question-six-tick" value = "6">
         </div>
     </div>
+    <label id = "question_number">{{question_num}}</label>
+
+    <script src = "quiz.js"></script>
+    <script>
+    document.getElementById('question').innerHTML('Hello World!');
+    </script>
 </body>

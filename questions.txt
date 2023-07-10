@@ -19,7 +19,7 @@ b. One to two hours
 c. Two to three hours
 d. Forever
 
-Question 5:
+Question 4:
 What are you into? (Pick all that apply)
 a. Horror
 b. Comedy
@@ -31,3 +31,16 @@ g. Romance
 h. Martial Arts
 i. Documentary
 j. Drama
+
+Question 5:
+Do you want to switch on your brain?
+a. Yes!
+b. Not really
+c. Don't really mind
+
+Question 6:
+Who directed the world renowned chick flick Mean Girls?
+a. Joe Biden
+b. Amy Poehler
+c. Tina Fey
+d. Mark Waters
