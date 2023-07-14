@@ -1,8 +1,5 @@
-<!doctype = html>
-<head>
-    <title>Quiz Question</title>
-</head>
-<body>
+{% extends "layout.html" %}
+{% block content %}
     <h1>WHAT SHOULD I BINGE TODAY?</h1>
     <hr>
     <div class = "quiz_container">
@@ -29,7 +26,4 @@
     <label id = "question_number">{{question_num}}</label>
 
     <script src = "quiz.js"></script>
-    <script>
-    document.getElementById('question').innerHTML('Hello World!');
-    </script>
-</body>
+{% endblock %}

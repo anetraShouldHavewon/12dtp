@@ -1,0 +1,10 @@
+<!doctype = html>
+<head>
+   <title>{{title}}</title>
+   <link rel = "stylesheet" href = "/static/css/style.css" link>
+</head>
+<body>
+    <nav>{% include "nav.html" %}</nav>
+    <main>{% block content %}{% endblock %}</main>
+    <footer>{% include "footer.html" %}</footer>
+</body>
