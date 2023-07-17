@@ -52,4 +52,4 @@ const quizData = [
 //html for each question
 
 let question_num = document.getElementById("question_number").outerHTML;
-document.getElementById("test").innerHTML = question_num;
+window.alert(question_num)
