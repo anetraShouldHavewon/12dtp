@@ -50,5 +50,6 @@ const quizData = [
 ];
 
 //html for each question
-let question_num = document.getElementById("question_number");
-window.alert( JSON.stringify(question_num) );
+
+let question_num = document.getElementById("question_number").outerHTML;
+document.getElementById("test").innerHTML = question_num;
