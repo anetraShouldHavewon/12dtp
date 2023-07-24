@@ -49,7 +49,45 @@ const quizData = [
     }
 ];
 
-//html for each question
+//checking the id of the page: passing the variable "question_num" via an undisplayed
+//label tag and assigning the number of options to the page depending on the id of the page
 
-let question_num = document.getElementById("question_number").outerHTML;
-window.alert(question_num)
+let question_num = document.getElementById("question_number").innerText;
+let question_number = parseInt(question_num);
+
+const four_option_questions = [1,2,3,6];
+const three_option_questions = [5];
+const ten_option_questions = [4];
+var question_options = 0;
+
+let four_option_true = four_option_questions.includes(question_number)
+let three_option_true = three_option_questions.includes(question_number)
+let ten_option_true = ten_option_questions.includes(question_number)
+
+if (four_option_true === true){
+    question_options = 4
+}else if (three_option_true === true){
+    question_options = 3
+}else if (ten_option_true === true){
+    question_options = 10
+}
+
+//testing line
+document.getElementById("test").innerHTML = question_options
+
+//prints out the quiz questions and options for each page:
+
+const option_set = quizData[question_number -1]
+document.getElementById("question").innerHTML = option_set.question
+delete option_set.question
+
+//creating html elements: https://softauthor.com/create-html-element-in-javascript/ and https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_document_createelement4 
+let keys = Object.keys(option_set)
+
+for (let x of keys){
+    let append_el = document.getElementById("options")
+    let question = option_set[x]
+    let new_el = document.createElement("button")
+    new_el.innerHTML = question
+    append_el.appendChild(new_el)
+}
