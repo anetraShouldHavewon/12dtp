@@ -89,5 +89,6 @@ for (let x of keys){
     let question = option_set[x]
     let new_el = document.createElement("button")
     new_el.innerHTML = question
+    new_el.setAttribute("id","options")
     append_el.appendChild(new_el)
 }
