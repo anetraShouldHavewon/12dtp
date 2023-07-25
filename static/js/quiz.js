@@ -89,6 +89,10 @@ for (let x of keys){
     let question = option_set[x]
     let new_el = document.createElement("button")
     new_el.innerHTML = question
-    new_el.setAttribute("id","options")
+    new_el.setAttribute("class","options")
     append_el.appendChild(new_el)
 }
+
+//cumulates data from the quiz to give you your film selection
+
+//determining which button leads to which sql query
