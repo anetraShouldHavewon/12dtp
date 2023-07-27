@@ -101,19 +101,23 @@ for (let x of keys){
 
 const answerOps = document.querySelectorAll(".options")
 //getting the id of the button selected
-function getSelected(){ answerOps.forEach(answerOp => answerOp.onclick = function getOption(){
-    var answer = answerOp.id
-    return answer
-})
+
+answerOps.addEventListener("click", getSelected)
+
+function getSelected(e){
+    const answerOpsId = e.target.id
 }
+
 
 //determining which query is sent based on answer
 const answerId = getSelected()
-if (question_number === 1){
+document.getElementById("test").innerText = answerId
+if (question_number === 4){
     if (answerId === "1"){
         let query = "SELECT"
     }
 }
+
 //passing query to routes.py --> https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/ 
 function transferData(query){
     $.ajax({
