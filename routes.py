@@ -253,7 +253,7 @@ def quiz_question(question_num):
         question_num_u = question_num + 1
     return render_template("questions.html", question_num = question_num, title = "Quiz Question", question_num_m = question_num_m, question_num_u = question_num_u)
 
-#@app.route("/quiz_results")
+#@app.route("/quiz_results", method = ["POST"])
 #def quiz_results():
 
 if __name__ == "__main__":

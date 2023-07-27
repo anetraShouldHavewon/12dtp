@@ -82,17 +82,50 @@ document.getElementById("question").innerHTML = option_set.question
 delete option_set.question
 
 //creating html elements: https://softauthor.com/create-html-element-in-javascript/ and https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_document_createelement4 
-let keys = Object.keys(option_set)
+let keys = Object.keys(option_set);
 
+let num = 0;
 for (let x of keys){
+    ++num;
     let append_el = document.getElementById("options")
     let question = option_set[x]
     let new_el = document.createElement("button")
     new_el.innerHTML = question
     new_el.setAttribute("class","options")
+    new_el.setAttribute("id",num)
     append_el.appendChild(new_el)
 }
 
 //cumulates data from the quiz to give you your film selection
-
 //determining which button leads to which sql query
+
+const answerOps = document.querySelectorAll(".options")
+//getting the id of the button selected
+function getSelected(){ answerOps.forEach(answerOp => answerOp.onclick = function getOption(){
+    var answer = answerOp.id
+    return answer
+})
+}
+
+//determining which query is sent based on answer
+const answerId = getSelected()
+if (question_number === 1){
+    if (answerId === "1"){
+        let query = "SELECT"
+    }
+}
+//passing query to routes.py --> https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/ 
+function transferData(query){
+    $.ajax({
+        url: "/quiz_results",
+        type: "POST",
+        data: {
+            age_range: query[0],
+            movie_age: query[1],
+            movie_length: query[2],
+            genres: query[3],
+            movie_complexity: query[4],
+        }
+    })
+
+}
