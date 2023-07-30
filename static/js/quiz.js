@@ -73,7 +73,7 @@ if (four_option_true === true){
 }
 
 //testing line
-document.getElementById("test").innerHTML = question_options
+//document.getElementById("test").innerHTML = question_options
 
 //prints out the quiz questions and options for each page:
 
@@ -89,9 +89,10 @@ for (let x of keys){
     ++num;
     let append_el = document.getElementById("options")
     let question = option_set[x]
-    let new_el = document.createElement("button")
-    new_el.innerHTML = question
+    let new_el = document.createElement("input")
+    new_el.setAttribute("type","button")
     new_el.setAttribute("class","options")
+    new_el.setAttribute("value", question)
     new_el.setAttribute("id",num)
     append_el.appendChild(new_el)
 }
@@ -99,25 +100,64 @@ for (let x of keys){
 //cumulates data from the quiz to give you your film selection
 //determining which button leads to which sql query
 
-const answerOps = document.querySelectorAll(".options")
+const answerOps = document.getElementById("options")
 //getting the id of the button selected
+//can help: https://stackoverflow.com/questions/37360486/change-a-variable-when-button-is-clicked
 
-answerOps.addEventListener("click", getSelected)
+//first bit of code
+//let answer = answerOps.addEventListener("click", getSelected)
+
+//function getSelected(e){
+    //const answerOpsId = e.target.id
+//}
+
+//document.getElementById("test").innerText = answer
+//determining which query is sent based on answer
+//const answerId = getSelected()
+//document.getElementById("test").innerText = answerId
+//if (question_number === 4){
+    //if (answerId === "1"){
+        //let query = "SELECT"
+    //}
+//}
+answerOps.addEventListener("click",getSelected)
 
 function getSelected(e){
-    const answerOpsId = e.target.id
-}
-
-
-//determining which query is sent based on answer
-const answerId = getSelected()
-document.getElementById("test").innerText = answerId
-if (question_number === 4){
-    if (answerId === "1"){
-        let query = "SELECT"
+    var answerOp = e.target
+    if (answerOp.tagName == "INPUT"){
+        //
+        if (question_number === 1){
+            var answerOpId = parseInt(e.target.id)
+            if (answerOpId === 1){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 2){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 3){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 4){
+                document.getElementById("test").innerText = answerOpId
+            }
+        }
+        if (question_number === 1){
+            var answerOpId = parseInt(e.target.id)
+            if (answerOpId === 1){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 2){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 3){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 4){
+                document.getElementById("test").innerText = answerOpId
+            }
+        }
     }
 }
-
 //passing query to routes.py --> https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/ 
 function transferData(query){
     $.ajax({
