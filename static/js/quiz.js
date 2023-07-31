@@ -104,7 +104,7 @@ const answerOps = document.getElementById("options")
 //getting the id of the button selected
 //can help: https://stackoverflow.com/questions/37360486/change-a-variable-when-button-is-clicked
 
-answerOps.addEventListener("click",getSelected)
+dicts = answerOps.addEventListener("click",getSelected)
 
 function getSelected(e){
     var answerOp = e.target
@@ -180,11 +180,18 @@ function getSelected(e){
                 var lastQmessage = "And yes. Mark Waters did indeed direct our Bible, Mean Girls."
                 document.getElementById("test").innerText = answerOpId
             }else{
-                var lastQmessage = "No. We recommend "
+                var lastQmessage = "No. We recommend you dedicate your time to watching Mean Girls"
             }
         }
     }
+    let dictOfThings = {
+        lastMessage: lastQmessage
+    }
+    return dictOfThings
 }
+
+document.getElementById("test").innerText = dicts.lastMessage
+
 //passing query to routes.py --> https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/ 
 function transferData(query){
     $.ajax({
