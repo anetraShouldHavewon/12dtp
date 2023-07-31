@@ -4,6 +4,8 @@ cursor = conn.cursor()
 
 genre_name = input("genre_name: ").title()
 genre_id = cursor.execute("SELECT id FROM Genre WHERE name = ?",(genre_name,)).fetchone()
+t = type(genre_id[0])
+print(t)
 if genre_id == None:
     print("genre_name is invalid")
 else:

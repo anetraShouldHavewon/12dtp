@@ -107,15 +107,19 @@ const answerOps = document.getElementById("options")
 dicts = answerOps.addEventListener("click",getSelected)
 
 function getSelected(e){
+    var query = []
     var answerOp = e.target
     if (answerOp.tagName == "INPUT"){
         //Age of audience
         if (question_number === 1){
             var answerOpId = parseInt(e.target.id)
+            let query_i = ""
             if (answerOpId === 1){
-                document.getElementById("test").innerText = answerOpId
+                query_i = "SELECT title FROM Movie WHERE film_rating IN (5,6)"
+                document.getElementById("test").innerText = query_i
             }
             if (answerOpId === 2){
+                query_i = "SELECT title FROM Movie WHERE film_rating IN (5,6)"
                 document.getElementById("test").innerText = answerOpId
             }
             if (answerOpId === 3){
@@ -124,6 +128,7 @@ function getSelected(e){
             if (answerOpId === 4){
                 document.getElementById("test").innerText = answerOpId
             }
+            query[0] = query_i
         }
         //Recent or old movie?
         if (question_number === 2){
@@ -182,12 +187,9 @@ function getSelected(e){
             }else{
                 var lastQmessage = "No. We recommend you dedicate your time to watching Mean Girls"
             }
+            query[5] = lastQmessage
         }
     }
-    let dictOfThings = {
-        lastMessage: lastQmessage
-    }
-    return dictOfThings
 }
 
 document.getElementById("test").innerText = dicts.lastMessage
@@ -203,7 +205,7 @@ function transferData(query){
             movie_length: query[2],
             genres: query[3],
             movie_complexity: query[4],
+            last_question: query[5]
         }
     })
-
 }

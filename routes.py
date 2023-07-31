@@ -1,6 +1,7 @@
 from flask import Flask, render_template
 import sqlite3
 
+
 app = Flask(__name__)
 
 #homepage
@@ -9,7 +10,7 @@ def home():
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
     
-    #functions/queries#
+    #functions/queries
     #getting a list of agenre ids from a list of names of genres
     def genre_id_from_genre_name(genre_list):
         genre_id_list = []
