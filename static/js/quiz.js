@@ -104,28 +104,12 @@ const answerOps = document.getElementById("options")
 //getting the id of the button selected
 //can help: https://stackoverflow.com/questions/37360486/change-a-variable-when-button-is-clicked
 
-//first bit of code
-//let answer = answerOps.addEventListener("click", getSelected)
-
-//function getSelected(e){
-    //const answerOpsId = e.target.id
-//}
-
-//document.getElementById("test").innerText = answer
-//determining which query is sent based on answer
-//const answerId = getSelected()
-//document.getElementById("test").innerText = answerId
-//if (question_number === 4){
-    //if (answerId === "1"){
-        //let query = "SELECT"
-    //}
-//}
 answerOps.addEventListener("click",getSelected)
 
 function getSelected(e){
     var answerOp = e.target
     if (answerOp.tagName == "INPUT"){
-        //
+        //Age of audience
         if (question_number === 1){
             var answerOpId = parseInt(e.target.id)
             if (answerOpId === 1){
@@ -141,7 +125,8 @@ function getSelected(e){
                 document.getElementById("test").innerText = answerOpId
             }
         }
-        if (question_number === 1){
+        //Recent or old movie?
+        if (question_number === 2){
             var answerOpId = parseInt(e.target.id)
             if (answerOpId === 1){
                 document.getElementById("test").innerText = answerOpId
@@ -154,6 +139,48 @@ function getSelected(e){
             }
             if (answerOpId === 4){
                 document.getElementById("test").innerText = answerOpId
+            }
+        }
+        //How long should your movie be?
+        if (question_number === 3){
+            var answerOpId = parseInt(e.target.id)
+            if (answerOpId === 1){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 2){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 3){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 4){
+                document.getElementById("test").innerText = answerOpId
+            }
+        }
+        //Do you want to switch on your brain?
+        if (question_number === 5){
+            var answerOpId = parseInt(e.target.id)
+            if (answerOpId === 1){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 2){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 3){
+                document.getElementById("test").innerText = answerOpId
+            }
+            if (answerOpId === 4){
+                document.getElementById("test").innerText = answerOpId
+            }
+        }
+        //Mean Girls question
+        if (question_number === 6){
+            var answerOpId = parseInt(e.target.id)
+            if (answerOpId === 4){
+                var lastQmessage = "And yes. Mark Waters did indeed direct our Bible, Mean Girls."
+                document.getElementById("test").innerText = answerOpId
+            }else{
+                var lastQmessage = "No. We recommend "
             }
         }
     }
