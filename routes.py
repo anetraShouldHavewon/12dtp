@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import sqlite3
 
 
@@ -254,8 +254,11 @@ def quiz_question(question_num):
         question_num_u = question_num + 1
     return render_template("questions.html", question_num = question_num, title = "Quiz Question", question_num_m = question_num_m, question_num_u = question_num_u)
 
-#@app.route("/quiz_results", method = ["POST"])
+#@app.route("/quiz_results", methods = ['POST'])
 #def quiz_results():
+    #data = request.get_json()
+    #result = data
+    #return jsonify(result = result)
 
 if __name__ == "__main__":
     app.run(debug = True)
