@@ -12,19 +12,31 @@
             </ul> 
         </form>
         </div>
-        <a href = "/quiz_question/{{question_num_m}}" class = "back">&#8606; BACK</a>
         <a href = "/quiz_question/{{question_num_u}}" class = "next">NEXT &#8608;</a>
 
-        <div class = "tick-boxes">
-            <input type = "checkbox" id = "question-one-tick" value = "1">
-            <input type = "checkbox" id = "question-two-tick" value = "2">
-            <input type = "checkbox" id = "question-three-tick" value = "3">
-            <input type = "checkbox" id = "question-four-tick" value = "4">
-            <input type = "checkbox" id = "question-five-tick" value = "5">
-            <input type = "checkbox" id = "question-six-tick" value = "6">
-        </div>
     </div>
     <label id = "question_number" style = "display: none;">{{question_num}}</label>
     <h3 id = "test"></h3>
     <script src = "/static/js/quiz.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--passing javascript object to routes.py: https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/-->
+    <script>
+        function transferData(answerOp,question_number){
+            $.ajax({
+                url: "/quiz_results",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    'answer_option': answerOp,
+                    'question_number': question_number
+                }),
+                success: function(response) {
+                    document.getElementById('test').innerHTML = response.result;
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
 {% endblock %}

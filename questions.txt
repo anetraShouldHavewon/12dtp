@@ -5,6 +5,12 @@ b. 10~13
 c. 15~18
 d. 18+
 
+Change to:
+a: "Under 13",
+b: "13~15"
+c: "16~17"
+d: "18+"
+
 Question 2:
 Recent or old cinema?
 a. Only movies made in this century
@@ -12,12 +18,19 @@ b. 70s~90s
 c. Old Hollywood!
 d. Don't really mind
 
+
 Question 3:
 How long should your movie be?
 a. Less than one hour
 b. One to two hours
 c. Two to three hours
 d. Forever
+
+Change to:
+a: "One to two hours",
+b: "Two to three hours",
+c: "Forever"
+Because not many movies are less than one hour long
 
 Question 4:
 What are you into? (Pick all that apply)

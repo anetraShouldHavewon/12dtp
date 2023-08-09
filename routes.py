@@ -1,17 +1,24 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import sqlite3
-
+import json
 
 app = Flask(__name__)
+
+#bracket condition??
+def sql():
+    conn = sqlite3.connect("Movie_Database_1.db")
+    cur = conn.cursor()
+    return [conn,cur]
+    #if fetch_status == "fetchone":
+        #cur.execute(query,(bracket_condition))
 
 #homepage
 @app.route("/home")
 def home():
-    conn = sqlite3.connect("Movie_Database_1.db")
-    cur = conn.cursor()
-    
+    cur = sql()[1]
+
     #functions/queries
-    #getting a list of agenre ids from a list of names of genres
+    #getting a list of genre ids from a list of names of genres
     def genre_id_from_genre_name(genre_list):
         genre_id_list = []
         new_genre_list = []
@@ -82,8 +89,7 @@ def home():
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
-    conn = sqlite3.connect("Movie_Database_1.db")
-    cur = conn.cursor()
+    cur = sql()[1]
     
     #functions#
     def person_name_list_from_person_id_list(movie_people_id):
@@ -252,13 +258,71 @@ def quiz_question(question_num):
     question_num_u = 6
     if question_num < 6:
         question_num_u = question_num + 1
+
     return render_template("questions.html", question_num = question_num, title = "Quiz Question", question_num_m = question_num_m, question_num_u = question_num_u)
 
-#@app.route("/quiz_results", methods = ['POST'])
-#def quiz_results():
-    #data = request.get_json()
-    #result = data
-    #return jsonify(result = result)
+@app.route("/quiz_results", methods = ['POST','GET'])
+def quiz_results():
+        cur = sql()[1]
+        result = []
+        results = set(result)
 
+        if request.method == 'POST':
+            data = request.get_json()
+            answer_option = data['answer_option']
+            question_number = data['question_number']
+            query = ""
+
+            #film_rating
+            if question_number == 1:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,4,5,6)"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,3,4,5,6,7,9,10)"
+                if answer_option== 4:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,2,3,4,5,6,7,8,9,10)"
+            #release_year
+            elif question_number == 2:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE release_year >= 2000"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE release_year >= 1970 AND release_year < 2000"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE release_year < 1970"
+                if answer_option== 4:
+                    query = "SELECT id FROM Movie"
+
+            elif question_number == 3:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE length <= 90"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE length > 90 and length <= 120"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE length > 120 and length <= 180"
+                if answer_option == 4:
+                    query = "SELECT id FROM Movie WHERE length > 180"
+
+            #elif question_number == 5:
+                #movie_complexity: query
+            #elif question_number == 6:
+                #last_question = query
+        
+            #query
+            query = cur.execute(query).fetchall()
+            query_list = []
+                
+            for item in range(len(query)):
+                query_list.append(query[item][0])
+
+            query_set = set(query_list)
+
+            results = results.intersection(query_set)
+            result = json.dumps(list(results))
+
+            return jsonify(result = result)
+        
+#passing flask object to javascript
 if __name__ == "__main__":
     app.run(debug = True)
