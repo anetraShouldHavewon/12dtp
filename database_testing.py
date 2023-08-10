@@ -22,24 +22,53 @@ cursor = conn.cursor()
 #result = cursor.execute(Query).fetchall()
 #print(result)
 
-film_query_result = []
-release_year_result = []
-movie_length_result = []
-film_rating_query = cursor.execute("SELECT id FROM Movie WHERE film_rating IN (5,6)").fetchall()
-release_year_query = cursor.execute("SELECT id FROM Movie WHERE release_year >= 2000").fetchall()
-movie_length_query = cursor.execute("SELECT id FROM Movie WHERE length > 90").fetchall()
 
-for item in range(len(film_rating_query)):
-    film_query_result.append(film_rating_query[item][0])
-for item in range(len(release_year_query)):
-    release_year_result.append(release_year_query[item][0])
-for item in range(len(movie_length_query)):
-    movie_length_result.append(movie_length_query[item][0])
+#film_query_result = []
+#release_year_result = []
+#movie_length_result = []
+#film_rating_query = cursor.execute("SELECT id FROM Movie WHERE film_rating IN (5,6)").fetchall()
+#release_year_query = cursor.execute("SELECT id FROM Movie WHERE release_year >= 2000").fetchall()
+#movie_length_query = cursor.execute("SELECT id FROM Movie WHERE length > 90").fetchall()
 
-film_rating_set = set(film_query_result)
-release_year_set = set(release_year_result)
-movie_length_set = set(movie_length_result)
+#for item in range(len(film_rating_query)):
+    #film_query_result.append(film_rating_query[item][0])
+#for item in range(len(release_year_query)):
+    #release_year_result.append(release_year_query[item][0])
+#for item in range(len(movie_length_query)):
+    #movie_length_result.append(movie_length_query[item][0])
 
-new_list = list(film_rating_set.intersection(release_year_result,movie_length_set))
+#film_rating_set = set(film_query_result)
+#release_year_set = set(release_year_result)
+#movie_length_set = set(movie_length_result)
 
-print(new_list)
+#new_list = list(film_rating_set.intersection(release_year_result,movie_length_set))
+
+#print(new_list)
+
+
+result = []
+results = set(result)
+
+for question_number in range(1,4):
+    if question_number == 1:
+        query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
+    if question_number == 2:
+        query = "SELECT id FROM Movie WHERE release_year >= 2000"
+    if question_number == 3:
+        query = "SELECT id FROM Movie WHERE length > 60 and length < 120"
+    
+    query = cursor.execute(query).fetchall()
+    query_list = []
+                    
+    for item in range(len(query)):
+        query_list.append(query[item][0])
+        
+    if question_number == 1:
+        result.extend(query_list)
+        results = set(result)
+    else:
+        query_set = set(query_list)
+        results = results.intersection(query_set)
+        result = list(results)
+    print(result)
+

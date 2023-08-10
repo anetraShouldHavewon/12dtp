@@ -110,6 +110,9 @@ function getSelected(e){
     if (answerOp.tagName == "INPUT"){
         var answerOpId = parseInt(e.target.id)
         transferData(answerOpId,question_number)
+        if (question_number === 4){
+            
+        }
     }
 }
 

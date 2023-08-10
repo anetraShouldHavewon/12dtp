@@ -21,14 +21,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--passing javascript object to routes.py: https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/-->
     <script>
-        function transferData(answerOp,question_number){
+        function transferData(answerOp,question_number,genre_list){
             $.ajax({
                 url: "/quiz_results",
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     'answer_option': answerOp,
-                    'question_number': question_number
+                    'question_number': question_number,
+                    'genre_list': genre_list
                 }),
                 success: function(response) {
                     document.getElementById('test').innerHTML = response.result;

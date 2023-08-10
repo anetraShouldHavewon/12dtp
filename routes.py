@@ -264,8 +264,6 @@ def quiz_question(question_num):
 @app.route("/quiz_results", methods = ['POST','GET'])
 def quiz_results():
         cur = sql()[1]
-        result = []
-        results = set(result)
 
         if request.method == 'POST':
             data = request.get_json()
@@ -283,6 +281,7 @@ def quiz_results():
                     query = "SELECT id FROM Movie WHERE film_rating IN (1,3,4,5,6,7,9,10)"
                 if answer_option== 4:
                     query = "SELECT id FROM Movie WHERE film_rating IN (1,2,3,4,5,6,7,8,9,10)"
+                
             #release_year
             elif question_number == 2:
                 if answer_option == 1:
@@ -316,12 +315,15 @@ def quiz_results():
             for item in range(len(query)):
                 query_list.append(query[item][0])
 
-            query_set = set(query_list)
+            if question_number == 1:
+                result.extend(query_list)
+                results = set(result)
+            else:
+                query_set = set(query_list)
+                results = results.intersection(query_set)
+                result = list(results)
 
-            results = results.intersection(query_set)
-            result = json.dumps(list(results))
-
-            return jsonify(result = result)
+            return jsonify(result = json.dumps(result))
         
 #passing flask object to javascript
 if __name__ == "__main__":
