@@ -1,6 +1,4 @@
 import sqlite3
-conn = sqlite3.connect("Movie_Database_1.db")
-cursor = conn.cursor()
 
 #genre_name = input("genre_name: ").title()
 #genre_id = cursor.execute("SELECT id FROM Genre WHERE name = ?",(genre_name,)).fetchone()
@@ -45,30 +43,23 @@ cursor = conn.cursor()
 
 #print(new_list)
 
+def sql(fetch_status,query,constraint):
+    conn = sqlite3.connect("Movie_Database_1.db")
+    cur = conn.cursor()
+    if fetch_status == "fetchone":
+        fetch_result = cur.execute(query,(constraint,)).fetchone()
+    if fetch_status == "fetchall":
+        fetch_result = cur.execute(query,(constraint,)).fetchall()
+    return fetch_result
 
-result = []
-results = set(result)
+def another_funct():
+    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
+    genre_id_list = []
+    for genre_name in genre_list:
+        genre_name_db = genre_name.title()
+        genre_id = sql("fetchone","SELECT id FROM Genre WHERE name = ?",genre_name_db)
+        genre_id_list.append(genre_id[0])
+    print(genre_id_list)
 
-for question_number in range(1,4):
-    if question_number == 1:
-        query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
-    if question_number == 2:
-        query = "SELECT id FROM Movie WHERE release_year >= 2000"
-    if question_number == 3:
-        query = "SELECT id FROM Movie WHERE length > 60 and length < 120"
-    
-    query = cursor.execute(query).fetchall()
-    query_list = []
-                    
-    for item in range(len(query)):
-        query_list.append(query[item][0])
-        
-    if question_number == 1:
-        result.extend(query_list)
-        results = set(result)
-    else:
-        query_set = set(query_list)
-        results = results.intersection(query_set)
-        result = list(results)
-    print(result)
+another_funct()
 

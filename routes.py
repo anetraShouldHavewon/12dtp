@@ -1,77 +1,107 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template
 import sqlite3
-import json
 
 app = Flask(__name__)
 
-#bracket condition??
-def sql():
+#opening connection to sql database, evaluating if the query used is a fetchone or fetchall and returning the result of the query
+#this function deals with getting data from the "Movie_Database_1.db"
+def sql(fetch_status,query,constraint):
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
-    return [conn,cur]
-    #if fetch_status == "fetchone":
-        #cur.execute(query,(bracket_condition))
+    if fetch_status == "fetchone":
+        fetch_result = cur.execute(query,(constraint,)).fetchone()
+    if fetch_status == "fetchall":
+        fetch_result = cur.execute(query,(constraint,)).fetchall()
+
+    return fetch_result
+
+#ALL FUNCTIONS BEYOND THIS POINT TAKE DATA TAKEN FROM DATABASES AND PUTS THEM INTO MANAGEABLE LIST FORMS#
+#getting a list of ids of genres in a list of genres names
+def genre_id_list_from_genre_name_list(genre_list):
+    genre_id_list = []
+    genre_name_list = []
+
+    for genre_name in genre_list:
+        #retrieving data from database
+        genre_name_db = genre_name.title()
+        genre_id = sql("fetchone","SELECT id FROM Genre WHERE name = ?",genre_name_db)
+
+        #evaluating if there genre_id is a valid result
+        #if genre_id does not exist, the genre name in the list of genres is misspelt or does not exist in the database yet
+        if genre_id == None:
+            print("{} is invalid.\nMaybe the genre name is misspelt or this genre does not yet exist in the database yet.".format(genre_name_db))  #testing error line
+        else:
+            genre_id = genre_id[0]
+            genre_name_list.append(genre_name_db)
+            genre_id_list.append(genre_id)
+
+    return [genre_id_list,genre_name_list]
+
+#getting a list of ids of movies of a particular genre using the genre's id
+def movie_id_from_genre_id(genre_id):
+    movie_id_list = []
+    movie_ids = sql("fetchall","SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",genre_id)
+    for movie_id in range(len(movie_ids)):
+        movie_id_list.append(movie_ids[movie_id][0])
+    return movie_id_list
+
+#getting the movie titles of a movie id in a list
+def movie_name_from_movie_id_list(movie_id_list):
+    movie_names_list = []
+    for movie_id in movie_id_list:
+        movie_name = sql("fetchone","SELECT title FROM Movie WHERE id = ?",movie_id)
+        movie_names_list.append(movie_name[0])
+    return movie_names_list
+
+#getting the movie poster of a movie id in a list
+def movie_posters_list_from_movie_id_list(movie_id_list):
+    movie_poster_list = []
+    for movie_id in movie_id_list:
+        movie_poster = sql("fetchone","SELECT film_poster FROM Movie WHERE id =?",movie_id)
+        movie_poster_list.append(movie_poster[0])
+    return movie_poster_list
+
+#getting a person's name from a person's id from a list
+def person_name_list_from_person_id_list(movie_people_id):
+    people_list = []
+    for people in movie_people_id:
+        person_id = people[1]
+        person_first_name = sql("fetchone","SELECT first_name FROM People WHERE id = ?",person_id)[0]
+        person_last_name = sql("fetchone","SELECT last_name FROM People WHERE id = ?",person_id)[0]
+        person_name = person_first_name + " " + person_last_name
+        people_list.append(person_name)
+
+    return people_list
+
+#getting a person's stage name from a person's name     
+def stage_name_from_person_id(person_id):
+    stage_name = sql("fetchone","SELECT stage_name FROM Stage_Name WHERE id = ?",person_id)
+    if stage_name != None:
+        stage_name = stage_name[0]
+
+    return stage_name
+
+
+#getting a list of movie ids based on their release year
+def movie_ids_from_release_year(release_year):
+    movie_id_list = []
+    movie_ids = sql("fetchall","SELECT id FROM Movie WHERE release_year = ?",release_year)
+    for movie_id in movie_ids:
+        movie_id_list.append(movie_id[0])
+
+    return movie_id_list
+    
+#ROUTES#
 
 #homepage
 @app.route("/home")
 def home():
-    cur = sql()[1]
-
-    #functions/queries
-    #getting a list of genre ids from a list of names of genres
-    def genre_id_from_genre_name(genre_list):
-        genre_id_list = []
-        new_genre_list = []
-
-        for genre_name in genre_list:
-            print(genre_name)
-            genre_name_db = genre_name.title()
-            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name_db,)).fetchone()
-            if genre_id == None:
-                print("{} is invalid".format(genre_name_db))  #test print line
-            else:
-                print("{} is valid".format(genre_name_db))  #test print line
-                new_genre_list.append(genre_name_db)
-                genre_id = genre_id[0]
-                genre_id_list.append(genre_id)
-
-
-        genre_dict = {
-            "genre_list" : new_genre_list,
-            "genre_id_list": genre_id_list, 
-        }  
-
-        return genre_dict
-          
-    #getting a list of movie ids and their namesfrom a list of genre ids
-    #getting movie_ids from a genre_id
-    def movie_id_from_genre_id(genre_id):
-        movie_id_list = []
-        movie_ids = cur.execute("SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",(genre_id,)).fetchall()
-        for movie_id in range(len(movie_ids)):
-            movie_id_list.append(movie_ids[movie_id][0])
-        return movie_id_list
-    
-    #getting movie names from movie_ids
-    def movie_name_from_genre_id(movie_id_list):
-        movie_names_list = []
-        for movie_id in movie_id_list:
-            movie_name = cur.execute("SELECT title FROM Movie WHERE id = ?",(movie_id,)).fetchone()
-            movie_names_list.append(movie_name[0])
-        return movie_names_list
-    
-    def movie_posters_list_from_movie_id_list(movie_id_list):
-        movie_poster_list = []
-        for movie_id in movie_id_list:
-            movie_poster = cur.execute("SELECT film_poster FROM Movie WHERE id =?",(movie_id,)).fetchone()[0]
-            movie_poster_list.append(movie_poster)
-        return movie_poster_list
-    
-    #variables
+    #genres
     genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
-    genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
-    genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
+    genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
+    genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
 
+    #movies of certain genres
     movie_id_dict = {}
     movie_names_dict = {}
     movie_posters_dict = {}
@@ -80,7 +110,7 @@ def home():
         genre_id = genre_id_list[id]
         movie_id_list = movie_id_from_genre_id(genre_id)
         movie_id_dict[genre_list[id]] = movie_id_list
-        movie_name_list = movie_name_from_genre_id(movie_id_list)
+        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
         movie_names_dict[genre_list[id]] = movie_name_list
         movie_posters_list = movie_posters_list_from_movie_id_list(movie_id_list)
         movie_posters_dict[genre_list[id]] = movie_posters_list
@@ -89,45 +119,24 @@ def home():
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
-    cur = sql()[1]
-    
-    #functions#
-    def person_name_list_from_person_id_list(movie_people_id):
-        people_list = []
-        for people in movie_people_id:
-            person_id = people[1]
-            person_first_name = cur.execute("SELECT first_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
-            person_last_name = cur.execute("SELECT last_name FROM People WHERE id = ?",(person_id,)).fetchone()[0]
-            person_name = person_first_name + " " + person_last_name
-            people_list.append(person_name)
+    #movie-info#
+    movie_info = sql("fetchone","SELECT * FROM Movie WHERE id = ?",id)
+    movie_people_id = sql("fetchall","SELECT * FROM Movie_People WHERE movie_id = ?",id)
 
-        return people_list
-        
-    def stage_name_from_person_id(person_id):
-        stage_name = cur.execute("SELECT stage_name FROM Stage_Name WHERE id = ?",(person_id,)).fetchone()
-        if stage_name != None:
-            stage_name = stage_name[0]
-
-            return stage_name
-
-    #queries#
-    movie_info = cur.execute("SELECT * FROM Movie WHERE id = ?",(id,)).fetchone()
-    movie_people_id = cur.execute("SELECT * FROM Movie_People WHERE movie_id = ?", (id,)).fetchall()
-
-    #variables#
     #people-info#
+    people_list = person_name_list_from_person_id_list(movie_people_id)
     stage_name_dict = {}
     directors_list = []
     actors_list = []
 
-    people_list = person_name_list_from_person_id_list(movie_people_id)
     for person in people_list:
         person_name = person
         person_id = movie_people_id[people_list.index(person)][1]
         person_type_id = movie_people_id[people_list.index(person)][2]
 
         stage_name = stage_name_from_person_id(person_id)
-        stage_name_dict[person_name] = stage_name
+        if stage_name != None:
+            stage_name_dict[person_name] = stage_name
         
         if person_type_id == 1:
             actors_list.append(person_name)
@@ -139,65 +148,10 @@ def movie_info(id):
 
 @app.route("/explore")
 def explore():
-    conn = sqlite3.connect("Movie_Database_1.db")
-    cur = conn.cursor()
-    
-    #functions/queries#
-    #getting a list of genre ids from a list of names of genres
-    def genre_id_from_genre_name(genre_list):
-        genre_id_list = []
-        new_genre_list = []
-
-        for genre_name in genre_list:
-            print(genre_name)
-            genre_name_db = genre_name.title()
-            genre_id = cur.execute("SELECT id FROM Genre WHERE name = ?",(genre_name_db,)).fetchone()
-            if genre_id == None:
-                print("{} is invalid".format(genre_name_db))  #test print line
-            else:
-                print("{} is valid".format(genre_name_db))  #test print line
-                new_genre_list.append(genre_name_db)
-                genre_id = genre_id[0]
-                genre_id_list.append(genre_id)
-
-
-        genre_dict = {
-            "genre_list" : new_genre_list,
-            "genre_id_list": genre_id_list, 
-        }  
-
-        return genre_dict
-
-    #getting a list of movie ids and their names from a list of genre ids
-    #getting movie_ids from a genre_id
-    def movie_id_from_genre_id(genre_id):
-        movie_id_list = []
-        movie_ids = cur.execute("SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",(genre_id,)).fetchall()
-        for movie_id in range(len(movie_ids)):
-            movie_id_list.append(movie_ids[movie_id][0])
-        return movie_id_list
-
-    #getting movie names from movie_ids
-    def movie_name_from_movie_id(movie_id_list):
-        movie_names_list = []
-        for movie_id in movie_id_list:
-            movie_name = cur.execute("SELECT title FROM Movie WHERE id = ?",(movie_id,)).fetchone()
-            movie_names_list.append(movie_name[0])
-        return movie_names_list
-
-    #getting a list of movie ids based on their release year
-    def movie_ids_from_release_year(release_year):
-        movie_id_list = []
-        movie_ids = cur.execute("SELECT id FROM Movie WHERE release_year = ?",(release_year,)).fetchall()
-        for id in movie_ids:
-            movie_id_list.append(id[0])
-        return movie_id_list
-    
-    #variables
     #getting movies and their info based on the genre
     genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
-    genre_id_list = genre_id_from_genre_name(genre_list)["genre_id_list"]
-    genre_list = genre_id_from_genre_name(genre_list)["genre_list"]
+    genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
+    genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
 
     movie_id_dict = {}
     movie_names_dict = {}
@@ -207,19 +161,20 @@ def explore():
     for id in range(len(genre_id_list)):
         genre_id = genre_id_list[id]
         genre_name = genre_list[id]
-        genre_description = cur.execute("SELECT description FROM Genre WHERE id = ?",(genre_id,)).fetchone()
+        genre_description = sql("fetchone","SELECT description FROM Genre WHERE id = ?",genre_id)
         genre_descriptions[genre_name] = genre_description[0]
         movie_id_list = movie_id_from_genre_id(genre_id)
         movie_id_dict[genre_name] = movie_id_list
-        movie_name_list = movie_name_from_movie_id(movie_id_list)
+        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
         movie_names_dict[genre_name] = movie_name_list
+
         #getting rotten tomatoes rating of each movie
-        one_genre_movies_rtr = {}
+        genre_movie_rtr = {}
         for movie_id in movie_id_list:
-            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE id = ?",(movie_id,)).fetchone()
+            rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE id = ?",movie_id)
             index = movie_id_list.index(movie_id)
-            one_genre_movies_rtr[movie_name_list[index]] = rtr[0]
-        genre_movie_rtr[genre_name] = one_genre_movies_rtr
+            genre_movie_rtr[movie_name_list[index]] = rtr[0]
+        genre_movie_rtr[genre_name] = genre_movie_rtr
 
     #getting movies released recently(in 2022 or 2023)
     release_year = [2022,2023]
@@ -231,15 +186,15 @@ def explore():
         index = release_year.index(year)
         year_dict = list_of_year_dicts[index]
         movie_id_list = movie_ids_from_release_year(year)
-        movie_name_list = movie_name_from_movie_id(movie_id_list)
+        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
         year_dict["movie_id_list"] = movie_id_list
         year_dict["movie_name_list"] = movie_name_list
         movie_rtr = {}
         movie_poster = {}
         for name in movie_name_list:
-            rtr = cur.execute("SELECT audience_rating FROM Movie WHERE title = ?",(name,)).fetchone()
+            rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE title = ?",name)
             movie_rtr[name] = rtr[0]
-            poster = cur.execute("SELECT film_poster FROM Movie WHERE title = ?", (name,)).fetchone()
+            poster = sql("fetchone","SELECT film_poster FROM Movie WHERE title = ?",name)
             movie_poster[name] = poster[0]
 
         year_dict["movie ratings"] = movie_rtr
@@ -248,82 +203,6 @@ def explore():
 
     return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
 
-    
-@app.route("/quiz_question/<int:question_num>")
-def quiz_question(question_num):
-    question_num_m = 1
-    if question_num > 1:
-        question_num_m = question_num - 1
-    
-    question_num_u = 6
-    if question_num < 6:
-        question_num_u = question_num + 1
-
-    return render_template("questions.html", question_num = question_num, title = "Quiz Question", question_num_m = question_num_m, question_num_u = question_num_u)
-
-@app.route("/quiz_results", methods = ['POST','GET'])
-def quiz_results():
-        cur = sql()[1]
-
-        if request.method == 'POST':
-            data = request.get_json()
-            answer_option = data['answer_option']
-            question_number = data['question_number']
-            query = ""
-
-            #film_rating
-            if question_number == 1:
-                if answer_option == 1:
-                    query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
-                if answer_option == 2:
-                    query = "SELECT id FROM Movie WHERE film_rating IN (1,4,5,6)"
-                if answer_option == 3:
-                    query = "SELECT id FROM Movie WHERE film_rating IN (1,3,4,5,6,7,9,10)"
-                if answer_option== 4:
-                    query = "SELECT id FROM Movie WHERE film_rating IN (1,2,3,4,5,6,7,8,9,10)"
-                
-            #release_year
-            elif question_number == 2:
-                if answer_option == 1:
-                    query = "SELECT id FROM Movie WHERE release_year >= 2000"
-                if answer_option == 2:
-                    query = "SELECT id FROM Movie WHERE release_year >= 1970 AND release_year < 2000"
-                if answer_option == 3:
-                    query = "SELECT id FROM Movie WHERE release_year < 1970"
-                if answer_option== 4:
-                    query = "SELECT id FROM Movie"
-
-            elif question_number == 3:
-                if answer_option == 1:
-                    query = "SELECT id FROM Movie WHERE length <= 90"
-                if answer_option == 2:
-                    query = "SELECT id FROM Movie WHERE length > 90 and length <= 120"
-                if answer_option == 3:
-                    query = "SELECT id FROM Movie WHERE length > 120 and length <= 180"
-                if answer_option == 4:
-                    query = "SELECT id FROM Movie WHERE length > 180"
-
-            #elif question_number == 5:
-                #movie_complexity: query
-            #elif question_number == 6:
-                #last_question = query
-        
-            #query
-            query = cur.execute(query).fetchall()
-            query_list = []
-                
-            for item in range(len(query)):
-                query_list.append(query[item][0])
-
-            if question_number == 1:
-                result.extend(query_list)
-                results = set(result)
-            else:
-                query_set = set(query_list)
-                results = results.intersection(query_set)
-                result = list(results)
-
-            return jsonify(result = json.dumps(result))
         
 #passing flask object to javascript
 if __name__ == "__main__":

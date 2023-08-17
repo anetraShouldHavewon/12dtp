@@ -1,0 +1,267 @@
+#JAVASCRIPT#
+//questions data
+const quizData = [
+    {
+        question: "What age range are you in?",
+        a: "Under 13",
+        b: "13~15",
+        c: "16~17",
+        d: "18+",
+    },
+    {
+        question: "Recent or old cinema?",
+        a: "Only movies made in this century",
+        b: "70s~90s",
+        c: "Old Hollywood!",
+        d: "Don't really mind"
+    },
+    {
+        question: "How long should your movie be?",
+        a: "One to two hours",
+        b: "Two to three hours",
+        c: "Forever"
+    },
+    {
+        question: "What are you into? (Pick all that apply)",
+        a: "Horror",
+        b: "Comedy",
+        c: "Sci-Fi/Fantasy",
+        d: "Animation",
+        e: "Western",
+        f: "Thriller",
+        g: "Romance",
+        h: "Martial Arts",
+        i: "Documentary",
+        j: "Drama"
+    },
+    {
+        question: "Do you want to switch on your brain?",
+        a: "Yes!",
+        b: "Not really",
+        c: "Don't really mind"
+    },
+    {
+        question: "Who directed the world renowned chick flick Mean Girls?",
+        a: "Joe Biden",
+        b: "Amy Poehler",
+        c: "Tina Fey",
+        d: "Mark Waters"
+    }
+];
+
+//checking the id of the page: passing the variable "question_num" via an undisplayed
+//label tag and assigning the number of options to the page depending on the id of the page
+
+let question_num = document.getElementById("question_number").innerText;
+let question_number = parseInt(question_num);
+
+const four_option_questions = [1,2,3,6];
+const three_option_questions = [5];
+const ten_option_questions = [4];
+var question_options = 0;
+
+let four_option_true = four_option_questions.includes(question_number)
+let three_option_true = three_option_questions.includes(question_number)
+let ten_option_true = ten_option_questions.includes(question_number)
+
+if (four_option_true === true){
+    question_options = 4
+}else if (three_option_true === true){
+    question_options = 3
+}else if (ten_option_true === true){
+    question_options = 10
+}
+
+//testing line
+//document.getElementById("test").innerHTML = question_options
+
+//prints out the quiz questions and options for each page:
+
+const option_set = quizData[question_number -1]
+document.getElementById("question").innerHTML = option_set.question
+delete option_set.question
+
+//creating html elements: https://softauthor.com/create-html-element-in-javascript/ and https://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_document_createelement4 
+let keys = Object.keys(option_set);
+
+let num = 0;
+for (let x of keys){
+    ++num;
+    let append_el = document.getElementById("options")
+    let question = option_set[x]
+    let new_el = document.createElement("input")
+    new_el.setAttribute("type","button")
+    new_el.setAttribute("class","options")
+    new_el.setAttribute("value", question)
+    new_el.setAttribute("id",num)
+    append_el.appendChild(new_el)
+}
+
+//cumulates data from the quiz to give you your film selection
+//determining which button leads to which sql query
+
+const answerOps = document.getElementById("options")
+//getting the id of the button selected
+//can help: https://stackoverflow.com/questions/37360486/change-a-variable-when-button-is-clicked
+
+answerOps.addEventListener("click",getSelected)
+
+function getSelected(e){
+    var answerOp = e.target
+    if (answerOp.tagName == "INPUT"){
+        var answerOpId = parseInt(e.target.id)
+        transferData(answerOpId,question_number)
+        if (question_number === 4){
+            
+        }
+    }
+}
+
+#html#
+{% extends "layout.html" %}
+{% block content %}
+    <h1>WHAT SHOULD I BINGE TODAY?</h1>
+    <hr>
+    <div class = "quiz_container">
+        <h2 id = "question">Question</h2>
+        <div class = "answers" id = "answers">
+        <form action = "/quiz_results">
+        <!--handling data from forms using python routes: https://stackoverflow.com/questions/11556958/sending-data-from-html-form-to-a-python-script-in-flask-->
+        <!--handling data from forms using python routes: https://www.infoworld.com/article/2077176/using-javascript-and-forms.html -->
+            <ul id = "options">
+            </ul> 
+        </form>
+        </div>
+        <a href = "/quiz_question/{{question_num_u}}" class = "next">NEXT &#8608;</a>
+
+    </div>
+    <label id = "question_number" style = "display: none;">{{question_num}}</label>
+    <h3 id = "test"></h3>
+    <script src = "/static/js/quiz.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--passing javascript object to routes.py: https://www.geeksforgeeks.org/pass-javascript-variables-to-python-in-flask/-->
+    <script>
+        function transferData(answerOp,question_number,genre_list){
+            $.ajax({
+                url: "/quiz_results",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    'answer_option': answerOp,
+                    'question_number': question_number,
+                    'genre_list': genre_list
+                }),
+                success: function(response) {
+                    document.getElementById('test').innerHTML = response.result;
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+#ROUTES#
+@app.route("/quiz_question/<int:question_num>")
+def quiz_question(question_num):
+    question_num_m = 1
+    if question_num > 1:
+        question_num_m = question_num - 1
+    
+    question_num_u = 6
+    if question_num < 6:
+        question_num_u = question_num + 1
+
+    return render_template("questions.html", question_num = question_num, title = "Quiz Question", question_num_m = question_num_m, question_num_u = question_num_u)
+
+@app.route("/quiz_results", methods = ['POST','GET'])
+def quiz_results():
+        cur = sql()[1]
+
+        if request.method == 'POST':
+            data = request.get_json()
+            answer_option = data['answer_option']
+            question_number = data['question_number']
+            query = ""
+
+            #film_rating
+            if question_number == 1:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,4,5,6)"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,3,4,5,6,7,9,10)"
+                if answer_option== 4:
+                    query = "SELECT id FROM Movie WHERE film_rating IN (1,2,3,4,5,6,7,8,9,10)"
+                
+            #release_year
+            elif question_number == 2:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE release_year >= 2000"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE release_year >= 1970 AND release_year < 2000"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE release_year < 1970"
+                if answer_option== 4:
+                    query = "SELECT id FROM Movie"
+
+            elif question_number == 3:
+                if answer_option == 1:
+                    query = "SELECT id FROM Movie WHERE length <= 90"
+                if answer_option == 2:
+                    query = "SELECT id FROM Movie WHERE length > 90 and length <= 120"
+                if answer_option == 3:
+                    query = "SELECT id FROM Movie WHERE length > 120 and length <= 180"
+                if answer_option == 4:
+                    query = "SELECT id FROM Movie WHERE length > 180"
+
+            #elif question_number == 5:
+                #movie_complexity: query
+            #elif question_number == 6:
+                #last_question = query
+        
+            #query
+            query = cur.execute(query).fetchall()
+            query_list = []
+                
+            for item in range(len(query)):
+                query_list.append(query[item][0])
+
+            if question_number == 1:
+                result.extend(query_list)
+                results = set(result)
+            else:
+                query_set = set(query_list)
+                results = results.intersection(query_set)
+                result = list(results)
+
+            return jsonify(result = json.dumps(result))
+
+#Testing#
+result = []
+results = set(result)
+
+for question_number in range(1,4):
+    if question_number == 1:
+        query = "SELECT id FROM Movie WHERE film_rating IN (5,6)"
+    if question_number == 2:
+        query = "SELECT id FROM Movie WHERE release_year >= 2000"
+    if question_number == 3:
+        query = "SELECT id FROM Movie WHERE length > 60 and length < 120"
+    
+    query = cursor.execute(query).fetchall()
+    query_list = []
+                    
+    for item in range(len(query)):
+        query_list.append(query[item][0])
+        
+    if question_number == 1:
+        result.extend(query_list)
+        results = set(result)
+    else:
+        query_set = set(query_list)
+        results = results.intersection(query_set)
+        result = list(results)
+    print(result)
