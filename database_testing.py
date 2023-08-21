@@ -53,13 +53,15 @@ def sql(fetch_status,query,constraint):
     return fetch_result
 
 def another_funct():
-    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
+    genre_list =  ["comedy"]
     genre_id_list = []
     for genre_name in genre_list:
         genre_name_db = genre_name.title()
         genre_id = sql("fetchone","SELECT id FROM Genre WHERE name = ?",genre_name_db)
         genre_id_list.append(genre_id[0])
-    print(genre_id_list)
+    for genre_id in genre_id_list:
+        genre_films = sql("fetchall","SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",genre_id)
+        print(genre_films)
 
 another_funct()
 

@@ -97,7 +97,7 @@ def movie_ids_from_release_year(release_year):
 @app.route("/home")
 def home():
     #genres
-    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
+    genre_list =  ["action","drama","comedy"]
     genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
     genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
 
@@ -115,13 +115,18 @@ def home():
         movie_posters_list = movie_posters_list_from_movie_id_list(movie_id_list)
         movie_posters_dict[genre_list[id]] = movie_posters_list
 
-    return render_template("home.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, movie_posters = movie_posters_dict)
+    return render_template("m_home.html", genre_list = genre_list, genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, movie_posters = movie_posters_dict)
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
     #movie-info#
     movie_info = sql("fetchone","SELECT * FROM Movie WHERE id = ?",id)
     movie_people_id = sql("fetchall","SELECT * FROM Movie_People WHERE movie_id = ?",id)
+
+    #film-rating
+    film_rating_id = movie_info[3]
+    film_rating = sql("fetchone","SELECT name FROM NZ_film_classification_rating WHERE id = ?",film_rating_id)
+    film_rating_description = sql("fetchone","SELECT description FROM NZ_film_classification_rating WHERE id = ?",film_rating_id)
 
     #people-info#
     people_list = person_name_list_from_person_id_list(movie_people_id)
@@ -143,7 +148,7 @@ def movie_info(id):
         elif person_type_id == 2: 
             directors_list.append(person_name)
 
-    return render_template("movie_info.html", movie_info = movie_info, people_list = people_list, stage_names = stage_name_dict, directors_list = directors_list, actors_list = actors_list)
+    return render_template("m_movie_info.html", movie_info = movie_info, people_list = people_list, stage_names = stage_name_dict, directors_list = directors_list, actors_list = actors_list, film_rating = film_rating, film_rating_description = film_rating_description)
 
 
 @app.route("/explore")
@@ -201,7 +206,7 @@ def explore():
         year_dict["movie_posters"] = movie_poster
       
 
-    return render_template("explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
+    return render_template("m_explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
 
         
 #passing flask object to javascript

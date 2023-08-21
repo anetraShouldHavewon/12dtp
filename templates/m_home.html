@@ -1,0 +1,60 @@
+<!doctype = html>
+{% extends "layout.html" %}
+{% block content %}
+<body>
+    <header>
+        <h1>what do i</h1>
+        <h1>BINGE</h1>
+        <h1>today?</h1>
+    </header>
+    <h2>Some genres you might like...</h2>
+    <div class = "action">
+    <h2>ACTION</h2>
+    <ul>
+    {% for poster in range(5) %}
+        <img scr = "/static/photos/pearl.jpg"/>
+        <li>
+            <h2>{{movie_posters['Action'][poster]}}</h2>
+            <h1>{{movie_names['Action'][poster]}}</h1>
+        </li>
+    {% endfor %}
+    </ul>
+    <!--https://stackoverflow.com/questions/17687328/getting-a-link-to-go-to-a-specific-section-on-another-page -->
+    <!--I learned how to create a hyperlink from this-->
+    <a href = "/explore#comedy_section">more...</a>
+    </div>
+
+    <div class = "drama">
+    <h2>DRAMA</h2>
+    <ul>
+    {% for poster in range(5) %}
+        <img scr = "/static/photos/pearl.jpg"/>
+         <li>
+            <h2>{{movie_posters['Drama'][poster]}}</h2>
+            <h1>{{movie_names['Drama'][poster]}}</h1>
+        </li>
+    {% endfor %}
+    </ul>
+    </div>
+
+    <div class = "comedy">
+    <h2>COMEDY</h2>
+    <ul>
+    {% for poster in range(5) %}
+        <img scr = "/static/photos/pearl.jpg"/>
+        <li>
+            <h2>{{movie_posters['Comedy'][poster]}}</h2>
+            <h1>{{movie_names['Comedy'][poster]}}</h1>
+        </li>
+    {% endfor %}
+    </ul>
+    
+    </div>
+
+
+    <!--<h3>{{genre_ids}}</h3>
+    <h3>{{movie_ids}}</h3>
+    <h3>{{movie_names}}</h3>
+    <h3>{{movie_posters}}</h3>-->
+</body>
+{% endblock %}

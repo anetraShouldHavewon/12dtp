@@ -1,0 +1,55 @@
+<!doctype = html>
+{% extends "layout.html" %}
+{% block content %}
+
+<body>
+    <div class = "poster">
+        <h2>image = {{movie_info[10]}}</h2>
+    </div>
+    <h3>{{movie_info[1]}}({{movie_info[5]}})</h3>
+    <ul>
+        <li><h3>Director(s):</h3></li>
+        {% for num in range( directors_list|length ) %}
+            {% if directors_list|length > num + 1 %}
+                <li><h3>{{directors_list[num]}},&nbsp;</h3></li>
+            {% else %}
+                <li><h3>{{directors_list[num]}}</h3></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <ul>
+        <li><h3>Starring:</h3></li>
+        {% for num in range( actors_list|length ) %}
+            {% if actors_list|length > num + 1 %}
+                {% if stage_names[actors_list[num]] is defined %}
+                    <li><h3>&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}}),</h3></li>
+                {%else%}
+                    <li><h3>&nbsp;{{actors_list[num]}},</h3></li>
+                {% endif %}
+            {% else %}
+                {% if stage_names[actors_list[num]] is defined %}
+                    <li><h3>&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}})</h3></li>
+                {%else%}
+                    <li><h3>&nbsp;{{actors_list[num]}}</h3></li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+    <h3>NZ Film Classification: {{film_rating[0]}}({{film_rating_description[0]}})</h3>
+    <h3>Rotten Tomatoes Audience Rating: &nbsp;{{movie_info[2]}}%</h3>
+
+    <ul>
+    <li><div class = "moral-ambiguity">
+        <h1>Moral Ambiguity</h1>
+        <h2>{{movie_info[8]}}/5</h2>
+        <h3>"{{movie_info[9]}}"</h3>
+    </div></li>
+    
+    <li><div class = "use-of-tropes">
+        <h1>Use of Tropes</h1>
+        <h2>{{movie_info[6]}}/5</h2>
+        <h3>"{{movie_info[7]}}"</h3>
+    </div></li>
+    </ul>
+</body>
+{% endblock %}
