@@ -6,3 +6,47 @@ ul{
 ul li{
     float: left;
 }
+
+.wrapper{
+    display: grid;
+    grid-template-columns: 1fr 7fr;
+    grid-gap: 0px;
+
+}
+
+.genre-nav{
+    height: 100vh;
+    position: -webkit-sticky;
+    position: sticky;
+    overflow-y: scroll;
+}
+
+.genre-sections{
+    height: 100vh;
+    overflow: scroll;
+
+}
+
+.genre{
+    margin: 10vh;
+}
+
+.poster-gallery{
+    margin: 10vh;
+    max-width: 20vh;
+    max-height: 30vh;
+    
+}
+
+.movie-info{
+    margin: 15px;
+}
+
+.explore-genre{
+    display: grid;
+    grid-template-columns: 30% 30% 30%;
+    grid-gap:10%;
+}
+
+
+

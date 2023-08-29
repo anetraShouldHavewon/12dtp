@@ -8,10 +8,16 @@ app = Flask(__name__)
 def sql(fetch_status,query,constraint):
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
-    if fetch_status == "fetchone":
-        fetch_result = cur.execute(query,(constraint,)).fetchone()
-    if fetch_status == "fetchall":
-        fetch_result = cur.execute(query,(constraint,)).fetchall()
+    if constraint == None:
+        if fetch_status == "fetchone":
+            fetch_result = cur.execute(query).fetchone()
+        if fetch_status == "fetchall":
+            fetch_result = cur.execute(query).fetchall()
+    else:
+        if fetch_status == "fetchone":
+            fetch_result = cur.execute(query,(constraint,)).fetchone()
+        if fetch_status == "fetchall":
+            fetch_result = cur.execute(query,(constraint,)).fetchall()
 
     return fetch_result
 
@@ -19,7 +25,8 @@ def sql(fetch_status,query,constraint):
 #getting a list of ids of genres in a list of genres names
 def genre_id_list_from_genre_name_list(genre_list):
     genre_id_list = []
-    genre_name_list = []
+    genre_list.sort()
+    new_genre_list = []
 
     for genre_name in genre_list:
         #retrieving data from database
@@ -32,10 +39,10 @@ def genre_id_list_from_genre_name_list(genre_list):
             print("{} is invalid.\nMaybe the genre name is misspelt or this genre does not yet exist in the database yet.".format(genre_name_db))  #testing error line
         else:
             genre_id = genre_id[0]
-            genre_name_list.append(genre_name_db)
             genre_id_list.append(genre_id)
+        new_genre_list.append(genre_name_db)
 
-    return [genre_id_list,genre_name_list]
+    return [genre_id_list,new_genre_list]
 
 #getting a list of ids of movies of a particular genre using the genre's id
 def movie_id_from_genre_id(genre_id):
@@ -154,59 +161,65 @@ def movie_info(id):
 @app.route("/explore")
 def explore():
     #getting movies and their info based on the genre
-    genre_list =  ["horror","romance","martial arts","comedy","drama","Science Fiction"]
+    genre_list =  []
+    genres = sql("fetchall","SELECT name FROM Genre",None)
+    for genre in genres:
+        genre_list.append(genre[0])
     genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
     genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
 
-    movie_id_dict = {}
     movie_names_dict = {}
     genre_descriptions = {}
     genre_movie_rtr = {}
-    
+    movie_id_dict = {}
+
     for id in range(len(genre_id_list)):
         genre_id = genre_id_list[id]
         genre_name = genre_list[id]
         genre_description = sql("fetchone","SELECT description FROM Genre WHERE id = ?",genre_id)
         genre_descriptions[genre_name] = genre_description[0]
         movie_id_list = movie_id_from_genre_id(genre_id)
-        movie_id_dict[genre_name] = movie_id_list
         movie_name_list = movie_name_from_movie_id_list(movie_id_list)
         movie_names_dict[genre_name] = movie_name_list
+        movie_id_dict[genre_name] = movie_id_list
 
         #getting rotten tomatoes rating of each movie
-        genre_movie_rtr = {}
+        genre_movie_rtr_list = []
         for movie_id in movie_id_list:
             rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE id = ?",movie_id)
             index = movie_id_list.index(movie_id)
-            genre_movie_rtr[movie_name_list[index]] = rtr[0]
-        genre_movie_rtr[genre_name] = genre_movie_rtr
-
+            genre_movie_rtr_list.append(rtr[0])
+        genre_movie_rtr[genre_name] = genre_movie_rtr_list
+    
+    print(movie_id_dict)
     #getting movies released recently(in 2022 or 2023)
-    release_year = [2022,2023]
-    two_zero_two_two_movies = {}
+    release_year = [2023]
     two_zero_two_three_movies = {}
-    list_of_year_dicts = [two_zero_two_two_movies, two_zero_two_three_movies]
+    list_of_year_dicts = [two_zero_two_three_movies]
 
     for year in release_year:
         index = release_year.index(year)
         year_dict = list_of_year_dicts[index]
         movie_id_list = movie_ids_from_release_year(year)
         movie_name_list = movie_name_from_movie_id_list(movie_id_list)
-        year_dict["movie_id_list"] = movie_id_list
-        year_dict["movie_name_list"] = movie_name_list
+
         movie_rtr = {}
         movie_poster = {}
+        movie_id = {}
+
         for name in movie_name_list:
             rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE title = ?",name)
             movie_rtr[name] = rtr[0]
             poster = sql("fetchone","SELECT film_poster FROM Movie WHERE title = ?",name)
             movie_poster[name] = poster[0]
+            movie_id[name] = movie_id_list[movie_name_list.index(name)]
 
-        year_dict["movie ratings"] = movie_rtr
+        year_dict["movie_ids"] = movie_id
+        year_dict["movie_ratings"] = movie_rtr
         year_dict["movie_posters"] = movie_poster
       
 
-    return render_template("m_explore.html", genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_descriptions = genre_descriptions, genre_movie_rtr = genre_movie_rtr, two_zero_two_two_movies = two_zero_two_two_movies, two_zero_two_three_movies = two_zero_two_three_movies)
+    return render_template("m_explore.html", genre_list = genre_list, genre_descriptions = genre_descriptions, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_movie_rtr = genre_movie_rtr, two_zero_two_three_movies = two_zero_two_three_movies)
 
         
 #passing flask object to javascript
