@@ -1,0 +1,45 @@
+<!doctype = html>
+{% extends "layout.html" %}
+{% block content %}
+
+<div class = "wrapper">
+    <div class = "explore-nav">
+        <a href = "#Great Score">
+            <h2>Great Rotten Tomatoes Score</h2>
+            <h3>Over 75%</h3>
+            <p></p>
+        </a>
+        <a href = "#Good Score">
+            <h2>Good Rotten Tomatoes Score</h2>
+            <h3>Between 60% to 75%</h3>
+            <p></p>
+        </a>
+        <a href = "#Bad Score">
+            <h2>Bad Rotten Tomatoes Score</h2>
+            <h3>Less than 60%</h3>
+        </a>
+    </div>
+
+    <div class = "explore-sections">
+        {% for rotten_tomato_range, rotten_tomato_dict in rotten_tomatoes_dict.items() %}
+            <a id = "{{rotten_tomato_range}}">
+                <h2>{{rotten_tomato_range}}</h2>
+            </a>
+            <div class = "rotten_tomato_gallery">
+                <ul>
+                {% for movie in range(rotten_tomato_dict["posters"] | length) %}
+                    <li>
+                    {% set movie_name = rotten_tomato_dict["movies"][movie] %}
+                    <img src = "/static/photos/pearl.jpg">
+                    <h2>{{movie_name}}</h2>
+                    <h2>{{rotten_tomato_dict['lengths'][movie_name]}}mins</h2>
+                    <h2>Rotten Tomatoes Rating: {{rotten_tomato_dict['rtrs'][movie_name]}}%</h2>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

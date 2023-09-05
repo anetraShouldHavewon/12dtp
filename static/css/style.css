@@ -7,6 +7,8 @@ ul li{
     float: left;
 }
 
+/*https://css-tricks.com/how-to-make-a-css-only-carousel/*/
+
 .wrapper{
     display: grid;
     grid-template-columns: 1fr 7fr;
@@ -14,21 +16,25 @@ ul li{
 
 }
 
-.genre-nav{
+.explore-nav{
     height: 100vh;
     position: -webkit-sticky;
     position: sticky;
     overflow-y: scroll;
 }
 
-.genre-sections{
+.explore-sections{
     height: 100vh;
     overflow: scroll;
 
 }
 
-.genre{
-    margin: 10vh;
+/*https://www.w3schools.com/howto/howto_css_image_gallery_scroll.asp*/
+.gallery{
+    width: 1fr;
+    overflow-x: auto;
+    white-space: nowrap;
+    height: 80vh;
 }
 
 .poster-gallery{
@@ -45,8 +51,30 @@ ul li{
 .explore-genre{
     display: grid;
     grid-template-columns: 30% 30% 30%;
-    grid-gap:10%;
+    grid-gap: 0px;
 }
 
+.home-genre-gallery{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.home-genre-section{
+    margin: 10vh;
+}
+
+.home-genre-poster-gallery{
+    width: 20%;
+}
+
+.home-title{
+    margin-left: 10vh;
+}
+
+.home-explore{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-left: 10vh;
+}
 
 

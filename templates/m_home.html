@@ -7,18 +7,53 @@
         <h1>BINGE</h1>
         <h1>today?</h1>
     </header>
-    <h2>Some genres you might like...</h2>
+
+    <h2 class = "home-title">EXPLORE BY...</h2>
+    <ul class = "home-explore">
+        <li><div>
+            <a href = "/genre">
+                <button>GENRES</button>
+            </a>
+        </div></li>
+
+        <li><div>
+            <a href = "/cinema_eras">
+            <button><h2>CINEMA ERAS</h2></button> 
+            </a>
+        </div></li>
+
+        <li><div>
+            <a href = "/rotten_tomatoes">
+                <button><h2>ROTTEN TOMATOES</h2></button> 
+            </a>
+        </div></li>
+    </ul>
+
+    <!--2023 New Releases section-->
+    <h2 class = "home-title">NEW 2023 RELEASES</h2>
+    <div class = "home-genre-section">
+        <ul class = "home-genre-gallery">
+        {% for title, poster in two_zero_two_three_movies['movie_posters'].items() %}
+            <li><img src = "/static/photos/pearl.jpg"/><!--{{poster}}-->
+            <h3>{{title}}</h3>
+            <h3>{{two_zero_two_three_movies['movie_ratings'][title]}}%</h3></li>
+        {% endfor %}
+        </ul>
+        </div>
+
+    <h2 class = "home-title">Some genres you might like...</h2>
 
     <!--ACTION SECTION-->
-    <div class = "action">
+    <div class = "home-genre-section">
     <h2>ACTION</h2>
-    <ul>
+    <ul class = "home-genre-gallery">
     {% for poster in range(5) %}
         <a href = "/movie_info/{{movie_ids['Action'][poster]}}">
-        <li class = "poster-gallery">
+        <li class = "home-genre-poster-gallery">
                 <img src = "/static/photos/pearl.jpg"/>
             <!--<img src = "{{movie_posters['Action'][poster]}}">-->
             <h3>{{movie_names['Action'][poster]}}</h3>
+            <h3></h3>
         </li>
         </a>
     {% endfor %}
@@ -29,30 +64,29 @@
     </div>
 
     <!--DRAMA SECTION-->
-    <div class = "drama">
+    <div class = "home-genre-section">
     <h2>DRAMA</h2>
-    <ul>
-    {% for poster in range(5) %}
+    <ul class = "home-genre-gallery">
+    {% for poster in range(4) %}
         <a href = "/movie_info/{{movie_ids['Drama'][poster]}}">
-         <li class = "poster-gallery">
+         <li class = "home-genre-poster-gallery">
                 <img src = "/static/photos/pearl.jpg"/>
             <!--<img src = "{{movie_posters['Drama'][poster]}}"/>-->
             <h3>{{movie_names['Drama'][poster]}}</h3>
-        </a>
         </li>
-
+        </a>
     {% endfor %}
     </ul>
     <a href = "/explore#Drama"><h3>more...</h3></a>
     </div>
 
     <!--COMEDY SECTION-->
-    <div class = "comedy">
+    <div class = "home-genre-section">
     <h2>COMEDY</h2>
-    <ul>
-    {% for poster in range(5) %}
+    <ul class = "home-genre-gallery">
+    {% for poster in range(4) %}
         <a href = "/movie_info/{{movie_ids['Comedy'][poster]}}">
-        <li class = "poster-gallery">
+        <li class = "home-genre-poster-gallery">
                 <img src = "/static/photos/pearl.jpg"/>
             <!--<img src = "{{movie_posters['Comedy'][poster]}}"/>-->
             <h3>{{movie_names['Comedy'][poster]}}</h3>

@@ -1,227 +1,317 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, abort
 import sqlite3
 
 app = Flask(__name__)
 
-#opening connection to sql database, evaluating if the query used is a fetchone or fetchall and returning the result of the query
-#this function deals with getting data from the "Movie_Database_1.db"
-def sql(fetch_status,query,constraint):
+# opening connection to sql database, evaluating if the query used is
+# a fetchone or fetchall and returning the result of the query
+# this function deals with getting data from the "Movie_Database_1.db"
+
+
+def sql(fetch_status, query, constraint):
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
-    if constraint == None:
+    if constraint is None:
         if fetch_status == "fetchone":
             fetch_result = cur.execute(query).fetchone()
         if fetch_status == "fetchall":
             fetch_result = cur.execute(query).fetchall()
     else:
         if fetch_status == "fetchone":
-            fetch_result = cur.execute(query,(constraint,)).fetchone()
+            fetch_result = cur.execute(query, (constraint,)).fetchone()
         if fetch_status == "fetchall":
-            fetch_result = cur.execute(query,(constraint,)).fetchall()
+            fetch_result = cur.execute(query, (constraint,)).fetchall()
 
     return fetch_result
+# ALL FUNCTIONS BEYOND THIS POINT TAKE DATA FETCHED FROM DATABASES AND PUTS
+# THEM INTO MANAGEABLE LIST FORMS#
 
-#ALL FUNCTIONS BEYOND THIS POINT TAKE DATA TAKEN FROM DATABASES AND PUTS THEM INTO MANAGEABLE LIST FORMS#
-#getting a list of ids of genres in a list of genres names
+
+def fetch_all_result_list(query, constraint):
+    return_list = []
+    query_result = sql("fetchall", query, constraint)
+    for item in query_result:
+        return_list.append(item[0])
+    return return_list
+
+#look into simplifying
 def genre_id_list_from_genre_name_list(genre_list):
+    # getting a list of ids of genres from a list of genres names
+    # and a alphabetically sorted capitalized list of genre names
     genre_id_list = []
     genre_list.sort()
     new_genre_list = []
-
     for genre_name in genre_list:
-        #retrieving data from database
         genre_name_db = genre_name.title()
-        genre_id = sql("fetchone","SELECT id FROM Genre WHERE name = ?",genre_name_db)
+        genre_id = sql("fetchone", "SELECT id FROM Genre WHERE name = ?",
+                       genre_name_db)[0]
 
-        #evaluating if there genre_id is a valid result
-        #if genre_id does not exist, the genre name in the list of genres is misspelt or does not exist in the database yet
-        if genre_id == None:
-            print("{} is invalid.\nMaybe the genre name is misspelt or this genre does not yet exist in the database yet.".format(genre_name_db))  #testing error line
+        # evaluating if a genre is logged into in the database
+        # if genre_id does not exist, the genre name in the list of genres is
+        #  misspelt or does not exist in the database yet
+        if genre_id is None:
+            print("{} is invalid.\nMaybe the genre name is misspelt or this"
+                  "genre does not yet exist in the database"
+                  "yet.".format(genre_name_db))
         else:
-            genre_id = genre_id[0]
             genre_id_list.append(genre_id)
         new_genre_list.append(genre_name_db)
 
-    return [genre_id_list,new_genre_list]
+    return [genre_id_list, new_genre_list]
 
-#getting a list of ids of movies of a particular genre using the genre's id
-def movie_id_from_genre_id(genre_id):
-    movie_id_list = []
-    movie_ids = sql("fetchall","SELECT movie_id FROM Movie_Genre WHERE genre_id = ?",genre_id)
-    for movie_id in range(len(movie_ids)):
-        movie_id_list.append(movie_ids[movie_id][0])
-    return movie_id_list
 
-#getting the movie titles of a movie id in a list
-def movie_name_from_movie_id_list(movie_id_list):
+def movie_gallery_info_from_movie_id_list(movie_id_list):
     movie_names_list = []
-    for movie_id in movie_id_list:
-        movie_name = sql("fetchone","SELECT title FROM Movie WHERE id = ?",movie_id)
-        movie_names_list.append(movie_name[0])
-    return movie_names_list
-
-#getting the movie poster of a movie id in a list
-def movie_posters_list_from_movie_id_list(movie_id_list):
+    movie_lengths_list = []
     movie_poster_list = []
+    movie_rtr_list = []
+    # getting the movie titles, lengths, posters and rotten tomato of
+    # each movie id in movie_id_list
     for movie_id in movie_id_list:
-        movie_poster = sql("fetchone","SELECT film_poster FROM Movie WHERE id =?",movie_id)
+        movie_name = sql("fetchone", "SELECT title FROM Movie WHERE id = ?",
+                         movie_id)
+        movie_names_list.append(movie_name[0])
+        movie_length = sql("fetchone", "SELECT length FROM Movie WHERE id = ?",
+                           movie_id)
+        movie_lengths_list.append(movie_length[0])
+        movie_poster = sql("fetchone",
+                           "SELECT film_poster FROM Movie WHERE id = ?",
+                           movie_id)
         movie_poster_list.append(movie_poster[0])
-    return movie_poster_list
+        movie_rating = sql("fetchone",
+                           "SELECT audience_rating FROM Movie WHERE id = ?",
+                           movie_id)
+        movie_rtr_list.append(movie_rating[0])
 
-#getting a person's name from a person's id from a list
+    return [movie_names_list, movie_lengths_list,
+            movie_poster_list, movie_rtr_list]
+
+
+def genre_movies(genre_id_list, genre_name_list):
+    # looping over a list of genre ids to find a list of ids of movies
+    # in that particular genre along with their titles,
+    # posters and lengths(information necessary to display
+    # each movie in scrollable galleries). Information is added into the
+    # dictionaries listed above under the capitalised genre names as keys
+    movie_id_dict = {}
+    movie_names_dict = {}
+    movie_posters_dict = {}
+    movie_lengths_dict = {}
+    movie_rtr_dict = {}
+    genre_movie_list = [movie_id_dict, movie_names_dict, movie_posters_dict,
+                        movie_lengths_dict, movie_rtr_dict]
+    for index, genre_id in enumerate(genre_id_list):
+        genre_name = genre_name_list[index]
+        movie_id_list = fetch_all_result_list("SELECT movie_id FROM "
+                                              "Movie_Genre WHERE genre_id = ?",
+                                              genre_id)
+        movie_gallery_info = movie_gallery_info_from_movie_id_list(
+            movie_id_list)
+        movie_id_dict[genre_name] = movie_id_list
+        movie_names_dict[genre_name] = movie_gallery_info[0]
+        movie_lengths_dict[genre_name] = movie_gallery_info[1]
+        movie_posters_dict[genre_name] = movie_gallery_info[2]
+        movie_rtr_dict[genre_name] = movie_gallery_info[3]
+
+    return genre_movie_list
+
+
 def person_name_list_from_person_id_list(movie_people_id):
+    # getting a list of people's full name from a person's id in a list of
+    # people associated with a specific movie
     people_list = []
     for people in movie_people_id:
         person_id = people[1]
-        person_first_name = sql("fetchone","SELECT first_name FROM People WHERE id = ?",person_id)[0]
-        person_last_name = sql("fetchone","SELECT last_name FROM People WHERE id = ?",person_id)[0]
-        person_name = person_first_name + " " + person_last_name
+        first_name = sql("fetchone", "SELECT first_name FROM "
+                         "People WHERE id = ?", person_id)[0]
+        last_name = sql("fetchone", "SELECT last_name FROM People "
+                        "WHERE id = ?", person_id)[0]
+        person_name = first_name + " " + last_name
         people_list.append(person_name)
 
     return people_list
 
-#getting a person's stage name from a person's name     
-def stage_name_from_person_id(person_id):
-    stage_name = sql("fetchone","SELECT stage_name FROM Stage_Name WHERE id = ?",person_id)
-    if stage_name != None:
-        stage_name = stage_name[0]
 
-    return stage_name
-
-
-#getting a list of movie ids based on their release year
-def movie_ids_from_release_year(release_year):
-    movie_id_list = []
-    movie_ids = sql("fetchall","SELECT id FROM Movie WHERE release_year = ?",release_year)
-    for movie_id in movie_ids:
-        movie_id_list.append(movie_id[0])
-
-    return movie_id_list
-    
-#ROUTES#
-
-#homepage
-@app.route("/home")
+# ROUTES#
+# homepage
+@app.route("/")
 def home():
-    #genres
-    genre_list =  ["action","drama","comedy"]
-    genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
-    genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
+    # information for genre section of home page
+    genre_name_list = ["action", "drama", "comedy"]
+    genre_id_list = genre_id_list_from_genre_name_list(genre_name_list)[0]
+    genre_name_list = genre_id_list_from_genre_name_list(genre_name_list)[1]
+    genre_movie_dict = genre_movies(genre_id_list, genre_name_list)
+    # getting movies released recently in 2023
+    release_year = [2022, 2023]
+    final_movie_id_list = []
+    final_movie_name_list = []
+    final_movie_length_list = []
+    final_movie_poster_list = []
+    final_movie_rtr_list = []
+    new_releases = [final_movie_id_list, final_movie_name_list,
+                    final_movie_poster_list, final_movie_length_list,
+                    final_movie_rtr_list]
 
-    #movies of certain genres
-    movie_id_dict = {}
-    movie_names_dict = {}
-    movie_posters_dict = {}
+    # getting the ids of movies released for each year in the
+    # release_year list
+    # along with their titles, posters and lengths
+    # (information necessary to display each movie in scrollable galleries)
+    for year in release_year:
+        movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE"
+                                              " release_year = ?", year)
+        movie_gallery_info = movie_gallery_info_from_movie_id_list(
+            movie_id_list)
+        final_movie_id_list.extend(movie_id_list)
+        final_movie_name_list.extend(movie_gallery_info[0])
+        final_movie_length_list.extend(movie_gallery_info[1])
+        final_movie_poster_list.extend(movie_gallery_info[2])
+        final_movie_rtr_list.extend(movie_gallery_info[3])
 
-    for id in range(len(genre_id_list)):
-        genre_id = genre_id_list[id]
-        movie_id_list = movie_id_from_genre_id(genre_id)
-        movie_id_dict[genre_list[id]] = movie_id_list
-        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
-        movie_names_dict[genre_list[id]] = movie_name_list
-        movie_posters_list = movie_posters_list_from_movie_id_list(movie_id_list)
-        movie_posters_dict[genre_list[id]] = movie_posters_list
+    return render_template("m_home.html", genre_movie_info=genre_movie_dict,
+                           new_release_info=new_releases)
 
-    return render_template("m_home.html", genre_list = genre_list, genre_ids = genre_id_list, movie_ids = movie_id_dict, movie_names = movie_names_dict, movie_posters = movie_posters_dict)
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
-    #movie-info#
-    movie_info = sql("fetchone","SELECT * FROM Movie WHERE id = ?",id)
-    movie_people_id = sql("fetchall","SELECT * FROM Movie_People WHERE movie_id = ?",id)
-
-    #film-rating
+    movie_info = sql("fetchone", "SELECT * FROM Movie WHERE id = ?", id)
+    # handles errors by redirecting to 404 error page
+    if movie_info is None:
+        abort(404)
+    # getting the NZ film ratings of each movie
+    # getting the description of the NZ film rating assigned to
+    # the particular film so that it is clear that an R16 film is for children
+    # over 16
     film_rating_id = movie_info[3]
-    film_rating = sql("fetchone","SELECT name FROM NZ_film_classification_rating WHERE id = ?",film_rating_id)
-    film_rating_description = sql("fetchone","SELECT description FROM NZ_film_classification_rating WHERE id = ?",film_rating_id)
-
-    #people-info#
+    film_rating = sql("fetchone",
+                      "SELECT name FROM NZ_film_classification_rating WHERE "
+                      "id = ?", film_rating_id)
+    film_rating_description = sql("fetchone", "SELECT description FROM "
+                                  "NZ_film_classification_rating WHERE id = ?",
+                                  film_rating_id)
+    film_rating_info = [film_rating, film_rating_description]
+    #more explanation
+    # Getting the names of the actors and
+    # directors associated with a film
+    movie_people_id = sql("fetchall",
+                          "SELECT * FROM Movie_People WHERE movie_id = ?", id)
     people_list = person_name_list_from_person_id_list(movie_people_id)
     stage_name_dict = {}
     directors_list = []
     actors_list = []
-
-    for person in people_list:
-        person_name = person
-        person_id = movie_people_id[people_list.index(person)][1]
-        person_type_id = movie_people_id[people_list.index(person)][2]
-
-        stage_name = stage_name_from_person_id(person_id)
-        if stage_name != None:
+    people_info = [stage_name_dict, directors_list, actors_list]
+    for index, person_name in enumerate(people_list):
+        person_id = movie_people_id[index][1]
+        person_type_id = movie_people_id[index][2]
+        # checking if the person has a stage name which could be more well
+        # known to the person browsing the website
+        stage_name = sql("fetchone",
+                         "SELECT stage_name FROM Stage_Name WHERE id = ?",
+                         person_id)
+        if stage_name is not None:
+            stage_name = stage_name[0]
             stage_name_dict[person_name] = stage_name
-        
+        # sorting people into actors or directors
+        # making sure that those who are both
+        # acting and directing in a film are in both the
+        # actors_list and directors_list
         if person_type_id == 1:
             actors_list.append(person_name)
-        elif person_type_id == 2: 
+        if person_type_id == 2:
             directors_list.append(person_name)
 
-    return render_template("m_movie_info.html", movie_info = movie_info, people_list = people_list, stage_names = stage_name_dict, directors_list = directors_list, actors_list = actors_list, film_rating = film_rating, film_rating_description = film_rating_description)
+    return render_template("m_movie_info.html", movie_info=movie_info,
+                           people_info=people_info,
+                           film_rating_info=film_rating_info)
 
 
-@app.route("/explore")
-def explore():
-    #getting movies and their info based on the genre
-    genre_list =  []
-    genres = sql("fetchall","SELECT name FROM Genre",None)
-    for genre in genres:
-        genre_list.append(genre[0])
-    genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
-    genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
-
-    movie_names_dict = {}
+@app.route("/genre")
+def genre():
+    # getting information about the movies assigned to
+    # to a particular genre for all the genres currently logged into my
+    # database. Information to be displayed in carousels
+    # First step: getting a list of all the genre ids and names in alphabetical
+    # order
+    genre_name_list = fetch_all_result_list("SELECT name FROM Genre", None)
+    genre_id_list = genre_id_list_from_genre_name_list(genre_name_list)[0]
+    genre_name_list = genre_id_list_from_genre_name_list(genre_name_list)[1]
+    # Information about each genre's description is retrieved
+    # To add information about each genre's description
+    # to the genre_movie_list where a list of information about the movies in
+    # each genre, I temporarily put the genre_descriptions dictionary into a
+    # list. I then added this processed_genre_description list
+    # to the genre_movie_list
     genre_descriptions = {}
-    genre_movie_rtr = {}
-    movie_id_dict = {}
+    for index, id in enumerate(genre_id_list):
+        genre_description = sql("fetchone", "SELECT description FROM Genre"
+                                " WHERE id = ?", id)
+        genre_descriptions[genre_name_list[index]] = genre_description
+    processed_genre_descriptions = [genre_descriptions]
+    genre_movie_list = genre_movies(genre_id_list, genre_name_list)
+    genre_movie_list.extend(processed_genre_descriptions)
 
-    for id in range(len(genre_id_list)):
-        genre_id = genre_id_list[id]
-        genre_name = genre_list[id]
-        genre_description = sql("fetchone","SELECT description FROM Genre WHERE id = ?",genre_id)
-        genre_descriptions[genre_name] = genre_description[0]
-        movie_id_list = movie_id_from_genre_id(genre_id)
-        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
-        movie_names_dict[genre_name] = movie_name_list
-        movie_id_dict[genre_name] = movie_id_list
+    return render_template("m_genre.html", genre_info=genre_movie_list)
 
-        #getting rotten tomatoes rating of each movie
-        genre_movie_rtr_list = []
-        for movie_id in movie_id_list:
-            rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE id = ?",movie_id)
-            index = movie_id_list.index(movie_id)
-            genre_movie_rtr_list.append(rtr[0])
-        genre_movie_rtr[genre_name] = genre_movie_rtr_list
-    
-    print(movie_id_dict)
-    #getting movies released recently(in 2022 or 2023)
-    release_year = [2023]
-    two_zero_two_three_movies = {}
-    list_of_year_dicts = [two_zero_two_three_movies]
 
-    for year in release_year:
-        index = release_year.index(year)
-        year_dict = list_of_year_dicts[index]
-        movie_id_list = movie_ids_from_release_year(year)
-        movie_name_list = movie_name_from_movie_id_list(movie_id_list)
+@app.route("/cinema_eras")
+def cinema_eras():
+    golden_age_of_hollywood = {}
+    new_age_of_hollywood = {}
+    blockbuster_age_of_hollywood = {}
+    cinema_eras_dict = {"Golden Age Of Hollywood": golden_age_of_hollywood,
+                        "New Age Of Hollywood": new_age_of_hollywood,
+                        "Blockbuster Age Of Hollywood":
+                        blockbuster_age_of_hollywood}
+    for key in cinema_eras_dict:
+        if key == "Golden Age Of Hollywood":
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE "
+                                                  "release_year >= 1910 AND "
+                                                  "release_year <= 1960", None)
+        elif key == "New Age Of Hollywood":
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE "
+                                                  "release_year > 1960 and "
+                                                  "release_year <= 1975", None)
+        elif key == "Blockbuster Age Of Hollywood":
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE "
+                                                  "release_year > 1975", None)
+        cinema_eras_dict[key] = movie_gallery_info_from_movie_id_list(
+            movie_id_list)
 
-        movie_rtr = {}
-        movie_poster = {}
-        movie_id = {}
+    return render_template("m_cinema_eras.html",
+                           cinema_eras_dict=cinema_eras_dict)
 
-        for name in movie_name_list:
-            rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE title = ?",name)
-            movie_rtr[name] = rtr[0]
-            poster = sql("fetchone","SELECT film_poster FROM Movie WHERE title = ?",name)
-            movie_poster[name] = poster[0]
-            movie_id[name] = movie_id_list[movie_name_list.index(name)]
 
-        year_dict["movie_ids"] = movie_id
-        year_dict["movie_ratings"] = movie_rtr
-        year_dict["movie_posters"] = movie_poster
-      
+@app.route("/rotten_tomatoes")
+def rotten_tomatoes():
+    great_score = {}
+    good_score = {}
+    bad_score = {}
+    rtr_dict = {"Great Score": great_score,
+                "Good Score": good_score,
+                "Bad Score": bad_score}
+    for key in rtr_dict:
+        if key == "Great Score":
+            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+                                                  "WHERE audience_rating >= "
+                                                  "75", None)
+        elif key == "Good Score":
+            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+                                                  "WHERE audience_rating < 75 "
+                                                  "AND audience_rating >= 60",
+                                                  None)
+        elif key == "Bad Score":
+            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+                                                  "WHERE audience_rating < 60",
+                                                  None)
+        rtr_dict[key] = movie_gallery_info_from_movie_id_list(movie_id_list)
 
-    return render_template("m_explore.html", genre_list = genre_list, genre_descriptions = genre_descriptions, movie_ids = movie_id_dict, movie_names = movie_names_dict, genre_movie_rtr = genre_movie_rtr, two_zero_two_three_movies = two_zero_two_three_movies)
+    return render_template("m_rotten_tomatoes.html",
+                           rotten_tomatoes_dict=rtr_dict)
 
-        
-#passing flask object to javascript
+
+@app.errorhandler(404)
+def error(e):
+    return render_template("error404.html")
+
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug=True)

@@ -1,0 +1,46 @@
+<!doctype = html>
+{% extends  "layout.html" %}
+{% block content %}
+
+<div class = "wrapper">
+    <div class = "explore-nav">
+        <a href = "#Golden Age Of Hollywood">
+            <h2>The Golden Age of Hollywood</h2>
+            <h3>1910s to mid 1960s</h3>
+            <p></p>
+        </a>
+        <a href = "#New Age Of Hollywood">
+            <h2>New Hollywood</h2>
+            <h3>Mid 1960s to mid 1970s</h3>
+            <p></p>
+        </a>
+        <a href = "#Blockbuster Age Of Hollywood">
+            <h2>The Blockbuster of Hollywood</h2>
+            <h3>Mid 1970s to present</h3>
+        </a>
+    </div>
+
+    <div class = "explore-sections">
+        {% for era_name, era_dict in cinema_eras_dict.items() %}
+            <a id = "{{era_name}}">
+            <h2>{{era_name}}</h2>
+            <div class = "gallery">
+                <ul>
+                {% for movie in range(era_dict["posters"] | length) %}
+                    <li>
+                    {% set movie_name = era_dict["movies"][movie] %}
+                    <!--<img src = "{{era_dict['posters'][movie_name]}}">-->
+                    <img src = "/static/photos/pearl.jpg">
+                    <h2>{{movie_name}}</h2>
+                    <h2>{{era_dict["lengths"][movie_name]}}mins</h2>
+                    <h2>Rotten Tomatoes Rating: {{era_dict["rtrs"][movie_name]}}%</h2>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div> 
+            </a>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

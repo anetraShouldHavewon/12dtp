@@ -45,52 +45,79 @@ cursor = connection.cursor()
 
 #print(new_list)
 
-def sql(fetch_status,query,constraint):
+def sql(fetch_status,
+        queryiiiii, constraint):
     conn = sqlite3.connect("Movie_Database_1.db")
     cur = conn.cursor()
-    if constraint == None:
+    if constraint is None:
         if fetch_status == "fetchone":
-            fetch_result = cur.execute(query).fetchone()
+            fetch_result = cur.execute(queryiiiii).fetchone()
         if fetch_status == "fetchall":
-            fetch_result = cur.execute(query).fetchall()
+            fetch_result = cur.execute(queryiiiii).fetchall()
     else:
         if fetch_status == "fetchone":
-            fetch_result = cur.execute(query,(constraint,)).fetchone()
+            fetch_result = cur.execute(queryiiiii,
+                                       (constraint,)).fetchone()
         if fetch_status == "fetchall":
-            fetch_result = cur.execute(query,(constraint,)).fetchall()
+            fetch_result = cur.execute(queryiiiii,
+                                       (constraint,)).fetchall()
     return fetch_result
 
+def gallery_img_info_from_movie_list(movie_list,movie_dict):
+    poster_dict = {}
+    length_dict = {}
+    rtr_dict = {}
 
+    for movie in movie_list:
+        poster = sql("fetchone", "SELECT film_poster FROM Movie WHERE title = ?", movie)[0]
+        poster_dict[movie] = poster
+        length = sql("fetchone","SELECT length FROM Movie WHERE title = ?",movie)[0]
+        length_dict[movie] = length
+        rtr = sql("fetchone","SELECT audience_rating FROM Movie WHERE title = ?", movie)[0]
+        rtr_dict[movie] = rtr
+        
+    movie_dict["movies"] = movie_list
+    movie_dict["posters"] = poster_dict
+    movie_dict["lengths"] = length_dict
+    movie_dict["rtrs"] = rtr_dict
 
-def genre_id_list_from_genre_name_list(genre_list):
-    genre_id_list = []
-    genre_list.sort()
-    new_genre_list = []
+    return movie_dict
+
+great_score = {}
+good_score = {}
+bad_score = {}
+
+rtr_list = [great_score, good_score, bad_score]
+
+rtr_dict = {"Great Score": great_score,
+                "Good Score": good_score,
+                "Bad Score": bad_score}
     
-    for genre_name in genre_list:
-        #retrieving data from database
-        genre_name_db = genre_name.title()
-        genre_id = sql("fetchone","SELECT id FROM Genre WHERE name = ?",genre_name_db)
+for score_range in rtr_list:
+    if score_range == great_score:
+        movies = sql(
+            "fetchall", "SELECT title FROM Movie WHERE audience_rating >= 75",
+            None)
+        print(movies)
+    #elif score_range == good_score:
+        #movies = sql("fetchall","SELECT title FROM Movie WHERE film_rating < 75 AND film_rating >= 60", None)
+    #elif score_range == bad_score:
+        #movies = sql("fetchall","SELECT title FROM Movie WHERE film_rating < 60", None)
 
-        #evaluating if there genre_id is a valid result
-        #if genre_id does not exist, the genre name in the list of genres is misspelt or does not exist in the database yet
-        if genre_id == None:
-            print("{} is invalid.\nMaybe the genre name is misspelt or this genre does not yet exist in the database yet.".format(genre_name_db))  #testing error line
-        else:
-            genre_id = genre_id[0]
-            genre_id_list.append(genre_id)
-        new_genre_list.append(genre_name_db)
+    movie_list = []
+    for movie in movies:
+        movie_list.append(movie[0])
 
-    return [genre_id_list,new_genre_list]
+    score_range = gallery_img_info_from_movie_list(
+        movie_list, score_range)
+        
+print(
+    rtr_dict["Great Score"])
 
+a = [1,2,3]
+b = {"why": 
+     "life"}
 
-genre_list =  ["action","drama","comedy"]
-genre_id_list = genre_id_list_from_genre_name_list(genre_list)[0]
-genre_list = genre_id_list_from_genre_name_list(genre_list)[1]
-
-movie_names_dict = {}
-for id in range(len(genre_id_list)):
-    movie_name_list = id + 1
-    movie_names_dict[genre_list[id]] = movie_name_list
-
-print(movie_names_dict)
+for key in b:
+    hh = b[key]
+    print(hh)

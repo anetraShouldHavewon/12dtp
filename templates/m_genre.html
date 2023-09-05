@@ -1,0 +1,44 @@
+<!doctype = html>
+{% extends "layout.html" %}
+{% block content %}
+
+<body>
+    <div class = "wrapper">
+        <div class = "explore-nav">
+            {% for genre in genre_list %}
+                <a href = "#{{genre}}">
+                    <h2>{{genre}}</h2>
+                    <h3>{{genre_descriptions[genre]}}</h3>
+                </a>
+            {% endfor %}
+        </div>
+        
+        <div class = "explore-sections">
+            {% for genre in genre_list %}
+                <a id = "{{genre}}">
+                <h2>{{genre}}</h2>
+                <div class = "gallery">
+                    <ul>
+                    {% for movies in range(movie_names[genre]|length) %}
+                        <div>
+                            <li><a href = "/movie_info/{{movie_ids[genre][movies]}}">
+                            <img src = "/static/photos/pearl.jpg">
+                            <!--<img src = "{{movie_posters[genre][movies]}}">-->
+                                
+                            <h2>{{movie_names[genre][movies]}}</h2>
+                            <h2>{{movie_lengths[genre][movies]}}mins</h2>
+                            <h2>Rotten Tomatoes Rating: {{movie_ratings[genre][movies]}}%</h2>
+                            </a></li>
+                        </div>
+                    {% endfor %}
+                    </ul>
+                </div>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    
+</body>
+
+{% endblock %}
