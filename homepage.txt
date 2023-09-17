@@ -1,0 +1,67 @@
+<!--{% for index, id in new_release_info[0] %}
+            <li><img src = "new_release_info[2][index]"/>
+                <h3>{{new_release_info[1][index]}}</h3>
+                <h3>{{new_release_info[3][index]}} mins</h3>
+                <h3>Rotten Tomatoes Rating:{{new_release_info[4][index]}}%</h3>
+            </li>
+        {% endfor %}-->
+
+
+<!--Genre Section-->>
+    <h2 class = "home-title">Some genres you might like...</h2>
+
+    <!--ACTION SECTION-->
+        <h2>ACTION</h2>
+        <div class = "home-genre-gallery">
+        {% for poster in range(5) %}
+            <a href = "/movie_info/{{movie_ids['Action'][poster]}}">
+            <div class = "movie">
+                <img src = "/static/photos/pearl.jpg"/>
+                <h3>{{movie_names['Action'][poster]}}</h3>
+                <h3></h3>
+            </div>
+            </a>
+        {% endfor %}
+        </div>
+
+        <a href = "/explore#Action"><h3>more...</h3></a>
+        <!--https://stackoverflow.com/questions/17687328/getting-a-link-to-go-to-a-specific-section-on-another-page -->
+        <!--I learned how to create a hyperlink from this-->
+        </div>
+    
+        <!--DRAMA SECTION-->
+        <div class = "home-genre-section">
+        <h2>DRAMA</h2>
+        <ul class = "home-genre-gallery">
+        {% for poster in range(4) %}
+            <a href = "/movie_info/{{movie_ids['Drama'][poster]}}">
+             <li class = "home-genre-poster-gallery">
+                    <img src = "/static/photos/pearl.jpg"/>
+                <!--<img src = "{{movie_posters['Drama'][poster]}}"/>-->
+                <h3>{{movie_names['Drama'][poster]}}</h3>
+            </li>
+            </a>
+        {% endfor %}
+        </ul>
+        <a href = "/explore#Drama"><h3>more...</h3></a>
+        </div>
+    
+        <!--COMEDY SECTION-->
+        <div class = "home-genre-section">
+        <h2>COMEDY</h2>
+        <ul class = "home-genre-gallery">
+        {% for poster in range(4) %}
+            <a href = "/movie_info/{{movie_ids['Comedy'][poster]}}">
+            <li class = "home-genre-poster-gallery">
+                    <img src = "/static/photos/pearl.jpg"/>
+                <!--<img src = "{{movie_posters['Comedy'][poster]}}"/>-->
+                <h3>{{movie_names['Comedy'][poster]}}</h3>
+            </li>
+            </a>
+        {% endfor %}
+        </ul>
+        <a href = "/explore#Comedy"><h3>more...</h3></a>
+    </body>
+    {% endblock %}
+
+    

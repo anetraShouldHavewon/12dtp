@@ -2,99 +2,125 @@
 {% extends "layout.html" %}
 {% block content %}
 <body>
-    <header>
-        <h1>what do i</h1>
-        <h1>BINGE</h1>
-        <h1>today?</h1>
-    </header>
-
-    <h2 class = "home-title">EXPLORE BY...</h2>
-    <ul class = "home-explore">
-        <li><div>
-            <a href = "/genre">
-                <button>GENRES</button>
-            </a>
-        </div></li>
-
-        <li><div>
-            <a href = "/cinema_eras">
-            <button><h2>CINEMA ERAS</h2></button> 
-            </a>
-        </div></li>
-
-        <li><div>
-            <a href = "/rotten_tomatoes">
-                <button><h2>ROTTEN TOMATOES</h2></button> 
-            </a>
-        </div></li>
-    </ul>
+    <div class = "header-img">
+        <div class = "header-text">
+            <h1>what do i</h1>
+            <h1>BINGE</h1>
+            <h1>today?</h1>
+        </div>
+    </div>
 
     <!--2023 New Releases section-->
-    <h2 class = "home-title">NEW 2023 RELEASES</h2>
-    <div class = "home-genre-section">
-        <ul class = "home-genre-gallery">
-        {% for title, poster in two_zero_two_three_movies['movie_posters'].items() %}
-            <li><img src = "/static/photos/pearl.jpg"/><!--{{poster}}-->
-            <h3>{{title}}</h3>
-            <h3>{{two_zero_two_three_movies['movie_ratings'][title]}}%</h3></li>
+    <div class="home-sections">
+        <h2 class = "home-title">NEW 2023/2022 RELEASES</h2>
+        <div class = "gallery">
+        {% for id in new_release_info[0] %}
+            {% set index = new_release_info[0].index(id) %}
+            <a href = "/movie_info/{{id}}">
+            <div class = "movie">
+                <img src = "{{new_release_info[2][index]}}"/>
+                <h3 class = "movie-title">{{new_release_info[1][index]}}({{new_release_info[3][index]}} mins)</h3>
+                <h3 class = "movie-gallery-rtr">Rotten Tomatoes Rating:{{new_release_info[4][index]}}%</h3>
+            </div>
+            </a>
         {% endfor %}
-        </ul>
         </div>
+    </div>
+        
+    <!--Genre Section-->
+    <div class = "home-sections">
+        <h2 class = "home-title">Some genres you might like...</h2>
 
-    <h2 class = "home-title">Some genres you might like...</h2>
-
-    <!--ACTION SECTION-->
-    <div class = "home-genre-section">
-    <h2>ACTION</h2>
-    <ul class = "home-genre-gallery">
-    {% for poster in range(5) %}
-        <a href = "/movie_info/{{movie_ids['Action'][poster]}}">
-        <li class = "home-genre-poster-gallery">
-                <img src = "/static/photos/pearl.jpg"/>
-            <!--<img src = "{{movie_posters['Action'][poster]}}">-->
-            <h3>{{movie_names['Action'][poster]}}</h3>
-            <h3></h3>
-        </li>
-        </a>
-    {% endfor %}
-    </ul>
-    <a href = "/explore#Action"><h3>more...</h3></a>
-    <!--https://stackoverflow.com/questions/17687328/getting-a-link-to-go-to-a-specific-section-on-another-page -->
-    <!--I learned how to create a hyperlink from this-->
+        <!--ACTION SECTION-->
+        {% for genre_index in range(3) %}
+        {% if genre_index == 0 %}
+            {% set genre = "Action" %}
+        {% endif %}
+        {% if genre_index == 1 %}
+            {% set genre = "Drama" %}
+        {% endif %}
+        {% if genre_index == 2 %}
+            {% set genre = "Comedy" %}
+        {% endif %}
+        <a href = "/genre#{{genre}}"><h2 class = "subheading">{{genre}}</h2></a>
+            <div class = "gallery">
+            {% for index in range(5) %}
+                <a href = "/movie_info/{{genre_movie_info[0][genre][index]}}">
+                <div class = "movie">
+                    <img src = "{{genre_movie_info[2][genre][index]}}"/>
+                    <h3 class = "movie-title">{{genre_movie_info[1][genre][index]}}({{genre_movie_info[3][genre][index]}} mins)</h3>
+                    <h3 class = "movie-gallery-rtr">Rotten Tomatoes Rating: {{genre_movie_info[4][genre][index]}}%</h3>
+                </div>
+                </a>
+            {% endfor %}
+            </div>
+            <!--https://stackoverflow.com/questions/17687328/getting-a-link-to-go-to-a-specific-section-on-another-page -->
+            <!--I learned how to create a hyperlink from this-->
+        {% endfor %}
+        <a href = "/genre"><h2 class = "home-link">More Genres ...</h2></a>
     </div>
 
-    <!--DRAMA SECTION-->
-    <div class = "home-genre-section">
-    <h2>DRAMA</h2>
-    <ul class = "home-genre-gallery">
-    {% for poster in range(4) %}
-        <a href = "/movie_info/{{movie_ids['Drama'][poster]}}">
-         <li class = "home-genre-poster-gallery">
-                <img src = "/static/photos/pearl.jpg"/>
-            <!--<img src = "{{movie_posters['Drama'][poster]}}"/>-->
-            <h3>{{movie_names['Drama'][poster]}}</h3>
-        </li>
-        </a>
-    {% endfor %}
-    </ul>
-    <a href = "/explore#Drama"><h3>more...</h3></a>
+    <!--Eras of Cinema-->
+    <div class="home-sections">
+        <h2 class = "home-title">What eras of cinema are you into?</h2>
+        <div class = "option-container">
+            <div class = "options">
+            <a href = "/cinema_eras#Golden Age Of Hollywood">
+                <div class = "cinema-era">
+                    <h2><mark>Golden Age Of Hollywood</mark><h2>
+                    <h3><mark>1910s to mid 1960s</mark></h3>
+                </div>
+            </a>
+            </div>
+            
+            <div class = "options">
+            <a href = "/cinema_eras#New Age Of Hollywood">
+                <div class = "cinema-era">
+                    <h2><mark>New Hollywood</mark></h2>
+                    <h3><mark>Mid 1960s to mid 1970s</mark></h3>
+                </div>
+            </a>
+            </div>
+
+            <div class = "options">
+            <a href = "/cinema_eras#Blockbuster Age Of Hollywood">
+                <div class = "cinema-era">
+                    <h2><mark>The Blockbuster Age of Hollywood</mark></h2>
+                    <h3><mark>Mid 1970s to present</mark></h3>
+                </div>
+            </a>
+            </div>
+        </div>
     </div>
 
-    <!--COMEDY SECTION-->
-    <div class = "home-genre-section">
-    <h2>COMEDY</h2>
-    <ul class = "home-genre-gallery">
-    {% for poster in range(4) %}
-        <a href = "/movie_info/{{movie_ids['Comedy'][poster]}}">
-        <li class = "home-genre-poster-gallery">
-                <img src = "/static/photos/pearl.jpg"/>
-            <!--<img src = "{{movie_posters['Comedy'][poster]}}"/>-->
-            <h3>{{movie_names['Comedy'][poster]}}</h3>
-        </li>
-        </a>
-    {% endfor %}
-    </ul>
-    <a href = "/explore#Comedy"><h3>more...</h3></a>
+    <div class="home-sections">
+        <h2 class = "home-title">Do you care about Rotten Tomato Ratings?</h2>
+        <div class = "option-container">
+            <div class = "option">
+            <a href = "/rotten_tomatoes#Great Score">
+                <div class = "rotten-tomatoes">
+                    <h2>YES!<h2>
+                </div>
+            </a>
+            </div>
+            
+            <div class = "option">
+            <a href = "/rotten_tomatoes#Good Score">
+                <div class = "rotten-tomatoes">
+                    <h2>A bit</h2>
+                </div>
+            </a>
+            </div>
+
+            <div class = "option">
+            <a href = "/rotten_tomatoes#Bad Score">
+                <div class = "rotten-tomatoes">
+                    <h2>Don't care at all</h2>
+                </div>
+            </a>
+            </div>
+        </div>
     </div>
-</body>
-{% endblock %}
+    {% endblock %}
+
+    

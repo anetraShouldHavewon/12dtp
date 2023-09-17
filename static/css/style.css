@@ -1,3 +1,18 @@
+body{
+    background-color:  #0c0c0e;
+}
+
+h1{
+    color: #FAF9F6;
+}
+h2{
+    color: #FAF9F6;
+}
+
+h3{
+    color:#FAF9F6
+}
+
 ul{
     list-style-type: none;
     overflow: hidden;
@@ -7,74 +22,585 @@ ul li{
     float: left;
 }
 
-/*https://css-tricks.com/how-to-make-a-css-only-carousel/*/
+/*Navigation Bar*/
+/* Link Style: https://css-irl.info/animating-underlines/*/
+nav{
+    background-color: #28282B;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
 
+nav li{
+    color:#FAF9F6;
+    margin-left: 1vw;
+    font-family: 'dense-regular', sans-serif;
+}
+
+nav li a:link,
+nav li a:visited{
+    text-decoration: none;
+}
+
+nav li a:hover,
+nav li a:focus{
+    text-decoration: underline;
+    text-decoration-color: aquamarine;
+}
+
+/*Header*/
+/* Where I learned how to create a hero image: https://www.w3schools.com/howto/howto_css_hero_image.asp#gsc.tab=0*/
+.header-img{
+    background-image: linear-gradient(rgba(179, 169, 199, 0.3),rgba(179, 169, 199, 0.3)), url(/static/photos/cinema.jpg);
+    height: 80%;
+    background-size: cover;
+    background-position: 80% 35%;
+    position: relative;
+    margin: 0;
+}
+
+.header-text{
+    font-family: 'flamingo-licht', sans-serif;
+    font-size: 10vh;
+    text-align:left;
+    position: absolute;
+    top: 6.5vh;
+    left: 10vw;
+}
+
+.header-text h1{
+    color: white;
+    line-height: 10vh;
+}
+
+/*Home Page*/
+.home-sections{
+    margin: auto;
+    width: 80vw;
+    padding-bottom: 0px;
+}
+
+
+.home-title{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 10vh;
+    margin-bottom: 0;
+}
+
+.gallery{
+    display: flex;
+    flex-wrap: wrap;
+    width: 90vw;
+}
+
+.gallery a{
+    text-decoration: none;
+}
+
+.subheading{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 5vh;
+    border-bottom: 8px solid #8e3fd3;
+    color: white;
+}
+
+.subheading:active,
+.subheading:visited{
+    color: white
+}
+
+.subheading:hover{
+    color: #8e3fd3;
+}
+
+.home-link{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 5vh;
+    text-decoration: none;
+}
+
+.home-link:active,
+.home-link:visited{
+    text-decoration: none;
+}
+
+.home-link:hover,
+.home-link:focus{
+    text-decoration: underline;
+    text-decoration-color: white;
+    color:#8e3fd3;
+}
+
+.movie{
+    display: flex;
+    flex-wrap: wrap;
+    overflow: wrap;
+    width: 25vh;
+    height: 62.5vh;
+    margin: 2vh;
+}
+
+.movie img{
+    width: 25vh;
+    height: 37.5vh;
+}
+
+.movie h3{
+    align-content: center;
+    margin-bottom: -8vh;
+    white-space: normal;
+    line-height: 2vh;
+    font-size: 2vh;
+}
+
+.movie-gallery-title{
+    font-family: 'scheherazade-bold', sans-serif;
+}
+
+.movie-gallery-rtr{
+    font-family: 'dense-regular', sans-serif;
+    color:aqua;
+}
+
+.movie img:link,
+.movie img:visited,
+.movie h3:link,
+.movie h3:visited{
+    text-decoration: none;
+}
+
+.movie:hover,
+.movie:focus{
+    filter: contrast(130%);
+    text-decoration: underline;
+    text-decoration-color: aquamarine;
+}
+
+.option-container{
+    display: grid;
+    grid-template-columns: 20vw 20vw 20vw;
+    grid-gap: 2vw;
+    justify-content: center;
+}
+
+.options{
+    border: 1px solid #8e3fd3;
+    border-radius: 0.9em;
+    height: 40vh;
+    margin-top: 2vh;
+    text-align: center;
+}
+
+.options a{
+    text-decoration: none;
+}
+
+.options:nth-child(1){
+    background-image: linear-gradient(rgba(179, 169, 199, 0.3),rgba(179, 169, 199, 0.3)), url(/static/photos/clark-gable.jpg);
+    background-size: cover;
+    background-position: 80% 35%;
+    position: relative;
+}
+
+.options:nth-child(2){
+    background-image: linear-gradient(rgba(179, 169, 199, 0.3),rgba(179, 169, 199, 0.3)), url(/static/photos/francis-coppola.jpg.webp);
+    background-size: cover;
+    background-position: 40% 35%;
+    position: relative;
+}
+
+.options:nth-child(3){
+    background-image: linear-gradient(rgba(179, 169, 199, 0.5),rgba(179, 169, 199, 0.5)), url(/static/photos/era_blockbuster.jpg.webp);
+    background-size: cover;
+    background-position: 50% 35%;
+    position: relative;
+}
+
+.cinema-era mark{
+    background-color: rgba(179, 169, 199, 0.5);
+}
+
+.cinema-era h2{
+    font-family: 'scheherazade-bold', sans-serif;
+    color: #d33fc4;
+}
+
+.cinema-era h3{
+    font-family: 'dense-regular', sans-serif;
+    color:#d33fc4;
+}
+
+.options:hover,
+.options:focus{
+    filter: contrast(130%);
+    border-bottom: 2vh solid #8e3fd3;
+}
+
+.option{
+    background-color: aliceblue;
+    border: 1px solid #8e3fd3;
+    border-radius: 0.9em;
+    height: 20vh;
+    margin-top: 2vh;
+    text-align: center;
+}
+
+.option a{
+    text-decoration: none;
+}
+
+.rotten-tomatoes h2{
+    margin-top: 8vh;
+    font-family: 'dense-regular', sans-serif;
+    color: #bb89e6;
+}
+
+.option:nth-child(1):hover,
+.option:nth-child(1):focus{
+    background-color: #3fd3ba;
+}
+
+.option:nth-child(2):hover,
+.option:nth-child(2):focus{
+    background-color: #6016f5;
+}
+
+.option:nth-child(3):hover,
+.option:nth-child(3):focus{
+    background-color: #d33fc4;
+}
+
+.rotten-tomatoes a:hover,
+.rotten-tomatoes a:focus{
+    color: white;
+}
+/*ending*/
+
+/*Genre, Era Of Cinema, Rotten Tomatoes*/
 .wrapper{
     display: grid;
     grid-template-columns: 1fr 7fr;
-    grid-gap: 0px;
-
+    grid-gap: 2vw;
 }
 
-.explore-nav{
+.nav{
     height: 100vh;
     position: -webkit-sticky;
     position: sticky;
     overflow-y: scroll;
+    background-color: #6016f5;
+    border-radius: 0.9em;
 }
 
-.explore-sections{
+.nav-sections{
+    width: 80%;
+}
+
+.nav-sections a{
+    text-decoration: none;
+}
+.nav-section-title{
+    font-family: 'scheherazade-bold', sans-serif;
+    font-size: 2.3vh;
+    padding-left: 2vw;
+}
+
+/*mark styling: https://www.abeautifulsite.net/posts/a-clever-way-to-style-the-mark-element/*/
+.alt-nav-section-title{
+    font-family: 'scheherazade-bold', sans-serif;
+    font-size: 2.1vh;
+    color: white;
+    padding: 1vh;
+    margin-left: 2vw;
+    border-radius: 1.5em 0;
+    background: linear-gradient(-100deg, #4888e1, #7d47e8);
+}
+
+.nav-sections:hover .alt-nav-section-title,
+.nav-sections:focus .alt-nav-section-title{
+    border: 0.1vw solid white
+}
+
+.nav-section-description{
+    font-family: 'dense-regular', sans-serif;
+    padding-left: 2vw;
+}
+
+.nav-section-description mark{
+    background-color: #6016f5;
+    color: white; 
+}
+
+.nav-sections:hover .nav-section-description mark,
+.nav-sections:focus .nav-section-description mark{
+    background-color: white;
+    color: #4888e1;
+}
+
+.nav-sections p{
+    font-family: 'dense-regular', sans-serif;
+    padding-left: 2vw;
+    font-size: 2.3vh;
+    color: white;
+}
+
+.sections{
     height: 100vh;
     overflow: scroll;
-
+    padding-left: 2vw;
 }
 
-/*https://www.w3schools.com/howto/howto_css_image_gallery_scroll.asp*/
-.gallery{
-    width: 1fr;
-    overflow-x: auto;
-    white-space: nowrap;
-    height: 80vh;
+.genre-header{
+    height:80vh;
+    width: 70vw;
+    background-image: url(/static/photos/develop_img.jpg);
+    background-size: 40vh;
+    background-position: 80% 35%;
+    margin-left: 0vw;
+    position: relative;
+    top: 5vh;
 }
 
-.poster-gallery{
-    margin: 10vh;
-    max-width: 20vh;
-    max-height: 30vh;
-    
+.genre-header h2{
+    color: #3ba493;
 }
 
-.movie-info{
-    margin: 15px;
+.era-header{
+    height:80vh;
+    width: 70vw;
+    background-image: url(/static/photos/cinema-era.jpg);
+    background-size: 70vw;
+    background-position: 60% 35%;
+    margin-left: 0vw;
+    position: relative;
+    top: 5vh;
 }
 
-.explore-genre{
+.era-header h2{
+    line-height: 2vh;
+}
+
+.rtr-header{
+    height:80vh;
+    width: 70vw;
+    background-image: linear-gradient(rgba(179, 169, 199, 0.3),rgba(179, 169, 199, 0.3)), url(/static/photos/rtr.jpg);
+    background-size: cover;
+    background-position: 80% 35%;
+    margin-left: 0vw;
+    position: relative;
+    top: 5vh;
+}
+
+.rtr-header h2{
+    color: white;
+    margin: 1vh;
+}
+
+.sections .header-text{
+    position: relative;
+    top: 12vh;
+    left: 5vw;
+}
+
+.genre-title{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 5vh;
+    color: white;
+    border-bottom: 8px solid #3fd3ba;
+}
+
+.era-title{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 5vh;
+    color: white;
+    border-bottom: 8px solid #7d3fd3;
+}
+
+.rtr-title{
+    font-family: 'heathergreen-regular', sans-serif;
+    font-size: 5vh;
+    color: white;
+    border-bottom: 8px solid #d33fc4; 
+}
+
+
+
+/*movie_info*/
+.movie-info-container{
     display: grid;
-    grid-template-columns: 30% 30% 30%;
-    grid-gap: 0px;
+    grid-template-columns: 1fr 7fr;
+    grid-gap: 2vw;
 }
 
-.home-genre-gallery{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+.movie-info-poster{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    position: -webkit-sticky;
+    position: sticky;
+    margin-top: 0vh
+
 }
 
-.home-genre-section{
-    margin: 10vh;
+.movie-info-poster img{
+    margin: auto;
+    width: 30vh;
+    height: 43.6vh;
+    margin: 3vh
 }
 
-.home-genre-poster-gallery{
-    width: 20%;
+.movie-info-info{
+    overflow: scroll;
 }
 
-.home-title{
-    margin-left: 10vh;
+.movie-info-info h1{
+    font-family: 'flamingo-licht', sans-serif;
+    font-size: 10vh;
+    color: white;
+    border-bottom: 2vh solid white;
+    margin-bottom: 0vh;
 }
 
-.home-explore{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    margin-left: 10vh;
+.movie-info-poster h3{
+    font-family: 'dense-regular', sans-serif;
+    font-size: 2vh;
+    margin: 0vh;
+    font-weight: lighter;
 }
 
+.movie-info-poster h3 mark{
+    font-weight: bold;
+    background-color: rgba(207, 207, 235, 0.7);
+    color: white;
+    font-size: 2.1vh;
+}
 
+.movie-info-poster .pink{
+    background: linear-gradient(0.2turn, rgba(211, 63, 196, 0.8), rgba(63, 211, 186, 0.8));
+    border-radius: 1vh;
+    border-radius: 1vh;
+    padding: 2vh;
+    margin-left: 0.5vw;
+}
+
+.movie-info-poster .blue{
+    background: linear-gradient(0.2turn, rgba(63, 211, 186, 0.8),rgba(142, 63, 211, 0.7));
+    border-radius: 1vh;
+    border-radius: 1vh;
+    padding: 2vh;
+    margin-left: 0.5vw;
+}
+
+.movie-info-poster .purple{
+    background: linear-gradient(0.2turn, rgba(142, 63, 211, 0.7), rgba(211, 63, 196, 0.8));
+    border-radius: 1vh;
+    padding: 2vh;
+    margin-left: 0.5vw;
+}
+
+.description{
+    width: 70vw;
+    text-align:left;
+    overflow: wrap;
+    border-radius: 3vh;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.description h3{
+    font-family: 'dense-regular', sans-serif;
+    font-size: 4vh;
+    font-weight: 50;
+    padding: 4vh;
+    color: #3ba493;
+}
+
+.people-list {
+    display: inline;
+    font-weight: lighter;
+}
+
+.list-title {
+    display: inline;
+}
+
+.list-title h3 mark{
+    font-weight: bold;
+    background-color: rgba(207, 207, 235, 1);
+    color: white;
+    font-size: 2.5vh;
+}
+
+.small-placards{
+    display: flex;
+    flex-direction: row;
+    gap: 7vh;
+    justify-content: center;
+}
+
+.placard{
+    width: 30vw;
+    height: 20vh;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 1vh;
+    border: 0.1vh solid white;
+    padding: 3vh;
+    filter: drop-shadow(10px 5px 4px #3ba493);
+}
+
+.placard h2{
+    font-family: 'scheherazade-bold', sans-serif;
+    font-size: 3vh;
+    border-bottom: 0.2vh solid white;
+}
+
+.placard h3{
+    font-family: 'scheherazade-bold', sans-serif;
+    font-size: 2.5vh;
+    font-weight: lighter;
+}
+
+/*Footer*/
+footer{
+    margin: 3vh;
+}
+
+footer hr{
+    color: #9a9aa5;   
+}
+footer h3{
+    font-family: 'dense-regular', sans-serif;
+    line-height: 0vh;
+    color: #9a9aa5;
+}
+
+/*Error*/
+.error-img{
+    background-image: linear-gradient(rgba(179, 169, 199, 0.2),rgba(179, 169, 199, 0.2)), url(/static/photos/404page.jpg);
+    height: 80%;
+    background-size: cover;
+    background-position: 70% 45%;
+    position: relative;
+    margin-top: -14vh;
+}
+
+.error h1{
+    font-family: 'flamingo-licht', sans-serif;
+    font-size: 20vh;
+    text-align: center;
+    color: #3ba493;
+    padding-top: 10vh;
+}
+
+.error h2{
+    font-family: 'dense-regular', sans-serif;
+    font-size: 3vh;
+    text-align: center;
+    color: black;
+}
+
+.error h2 a{
+    text-decoration: underline;
+    text-decoration-color: #3ba493;
+    color: black;
+}

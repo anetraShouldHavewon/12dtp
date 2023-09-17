@@ -3,41 +3,55 @@
 {% block content %}
 
 <body>
+    {% set movie_id_dict = genre_info[0] %}
+    {% set movie_name_dict = genre_info[1] %}
+    {% set movie_poster_dict = genre_info[2] %}
+    {% set movie_length_dict = genre_info[3] %}
+    {% set movie_rtr_dict = genre_info[4] %}
+    {% set genre_description_list = genre_info[5] %}
+    {% set genre_name_list = genre_info[6] %}
+
     <div class = "wrapper">
-        <div class = "explore-nav">
-            {% for genre in genre_list %}
-                <a href = "#{{genre}}">
-                    <h2>{{genre}}</h2>
-                    <h3>{{genre_descriptions[genre]}}</h3>
+        <div class = "nav">
+            {% for index in range(genre_name_list|length) %}
+            <div class = "nav-sections">
+                <a href = "#{{genre_name_list[index]}}">
+                    <h2 class = "alt-nav-section-title">{{genre_name_list[index]}}</h2>
+                    <h3 class = "nav-section-description"><mark>{{genre_description_list[index]}}</mark></h3>
                 </a>
+            </div>
             {% endfor %}
         </div>
         
-        <div class = "explore-sections">
-            {% for genre in genre_list %}
-                <a id = "{{genre}}">
-                <h2>{{genre}}</h2>
-                <div class = "gallery">
-                    <ul>
-                    {% for movies in range(movie_names[genre]|length) %}
-                        <div>
-                            <li><a href = "/movie_info/{{movie_ids[genre][movies]}}">
-                            <img src = "/static/photos/pearl.jpg">
-                            <!--<img src = "{{movie_posters[genre][movies]}}">-->
-                                
-                            <h2>{{movie_names[genre][movies]}}</h2>
-                            <h2>{{movie_lengths[genre][movies]}}mins</h2>
-                            <h2>Rotten Tomatoes Rating: {{movie_ratings[genre][movies]}}%</h2>
-                            </a></li>
-                        </div>
-                    {% endfor %}
-                    </ul>
+        <div class = "sections">
+            {% for index in range(genre_name_list|length + 1) %}
+                {% if index == 0 %}
+                <div class = "genre-header">
+                    <div class = "header-text">
+                        <h2>Search By...</h2>
+                        <h2>GENRE</h2>
+                    </div>
                 </div>
-                </a>
+                {% else %}
+                    {% set genre = genre_name_list[index - 1] %}
+                    <a id = "{{genre}}">
+                    <h2 class = "genre-title">{{genre}}</h2>
+                    <div class = "gallery">
+                        {% for movie_index in range(movie_name_dict[genre]|length) %}
+                        <a href = "/movie_info/{{movie_id_dict[genre][movie_index]}}">
+                        <div class = "movie">
+                            <img src = "{{movie_poster_dict[genre][movie_index]}}">
+                            <h3 class = "movie-title">{{movie_name_dict[genre][movie_index]}}({{movie_length_dict[genre][movie_index]}}mins)</h3>
+                            <h3 class = "movie-gallery-rtr">Rotten Tomatoes Rating: {{movie_rtr_dict[genre][movie_index]}}%</h3>
+                        </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
-    
     
 </body>
 

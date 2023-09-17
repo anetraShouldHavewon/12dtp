@@ -3,53 +3,75 @@
 {% block content %}
 
 <body>
-    <div class = "poster">
-        <img src = "{{movie_info[10]}}"/>
-    </div>
-    <h3>{{movie_info[1]}}({{movie_info[5]}})</h3>
-    <ul>
-        <li><h3>Director(s):</h3></li>
-        {% for num in range( directors_list|length ) %}
-            {% if directors_list|length > num + 1 %}
-                <li><h3>{{directors_list[num]}},&nbsp;</h3></li>
+    <div class = "movie-info-container">
+        <div class = "movie-info-poster">
+            {% if colour_index == 0 %}
+                {% set colour = "pink" %}
+            {% elif colour_index == 1 %}
+                {% set colour = "purple" %}
             {% else %}
-                <li><h3>{{directors_list[num]}}</h3></li>
+                {% set colour = "blue" %}
             {% endif %}
-        {% endfor %}
-    </ul>
-    <ul>
-        <li><h3>Starring:</h3></li>
-        {% for num in range( actors_list|length ) %}
-            {% if actors_list|length > num + 1 %}
-                {% if stage_names[actors_list[num]] is defined %}
-                    <li><h3>&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}}),</h3></li>
-                {%else%}
-                    <li><h3>&nbsp;{{actors_list[num]}},</h3></li>
-                {% endif %}
-            {% else %}
-                {% if stage_names[actors_list[num]] is defined %}
-                    <li><h3>&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}})</h3></li>
-                {%else%}
-                    <li><h3>&nbsp;{{actors_list[num]}}</h3></li>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-    </ul>
-    <h3>NZ Film Classification: {{film_rating[0]}}({{film_rating_description[0]}})</h3>
-    <h3>Rotten Tomatoes Audience Rating: &nbsp;{{movie_info[2]}}%</h3>
+            <div class = {{colour}}>
+            <img src = "{{movie_info[7]}}"/>
+            <h3><mark>Length:</mark> {{movie_info[9]}}min</h3>
+            <h3><mark>NZ Film Classification:</mark> {{film_rating_info[0]}} ({{film_rating_info[1]}})</h3>
+            <h3><mark>Rotten Tomatoes Audience Rating:</mark> &nbsp;{{movie_info[1]}}%</h3>
+                <div class = "directors">
+                    <h3 class = "list-title"><mark>Director(s):</mark></h3>
+                    {% set directors_list = people_info[1] %}
+                    {% for num in range( directors_list|length ) %}
+                        {% if directors_list|length > num + 1 %}
+                            <h3 class = "people-list">{{directors_list[num]}},&nbsp;</h3>
+                        {% else %}
+                            <h3 class = "people-list">{{directors_list[num]}}</h3>
+                        {% endif %}
+                    {% endfor %}
+                </div>
 
-    <ul>
-    <li  class = "movie-info"><div class = "moral-ambiguity">
-        <h1>Moral Ambiguity</h1>
-        <h2>{{movie_info[8]}}/5</h2>
-        <h3>"{{movie_info[9]}}"</h3>
-    </div></li>
-    
-    <li  class = "movie-info"><div class = "use-of-tropes">
-        <h1>Use of Tropes</h1>
-        <h2>{{movie_info[6]}}/5</h2>
-        <h3>"{{movie_info[7]}}"</h3>
-    </div></li>
-    </ul>
+                <div class = "actors">
+                    <h3 class = "list-title"><mark>Starring:</mark></h3>
+                    {% set actors_list = people_info[2] %}
+                    {% set stage_names = people_info[0] %}
+                    {% for num in range( actors_list|length ) %}
+                        {% if actors_list|length > num + 1 %}
+                            {% if stage_names[actors_list[num]] is defined %}
+                                <h3 class = "people-list">&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}}),</h3>
+                            {%else%}
+                                <h3 class = "people-list">&nbsp;{{actors_list[num]}},</h3>
+                            {% endif %}
+                        {% else %}
+                            {% if stage_names[actors_list[num]] is defined %}
+                                <h3 class = "people-list">&nbsp;{{actors_list[num]}}({{stage_names[actors_list[num]]}})</h3>
+                            {%else%}
+                                <h3 class = "people-list">&nbsp;{{actors_list[num]}}</h3>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class = "movie-info-info">
+            <h1>{{movie_info[0]}}({{movie_info[2]}})</h1>
+
+            <div class = "description">
+                <h3>{{movie_info[8]}}</h3>
+            </div>
+
+            <div class = "small-placards">
+                <div class = "placard">
+                    <h2>Moral Ambiguity({{movie_info[5]}}/5)</h2>
+                    <h3>{{movie_info[6]}}</h3>
+                </div>
+                
+                <div class = "placard">
+                    <h2>Use of Tropes({{movie_info[3]}}/5)</h2>
+                    <h3>{{movie_info[4]}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 {% endblock %}

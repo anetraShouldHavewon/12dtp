@@ -1,3 +1,14 @@
 <!doctype = html>
-<h2>404 error</h2>
-<a href = "/"><h3>Let's Go Home</h3></a>
+{% extends "layout.html" %}
+{% block content %}
+<body>
+    <div class = "error-img">
+        <div class = "error">
+            <h1>404</h1>
+            <h2>Hi Gorge. This website doesn't seem to exist. Sorry.</h2>
+            <h2>Let's Go <a href = "/">Home</a></h2>
+            <h2></h2>
+        </div>
+    </div>
+</body>
+{% endblock %}

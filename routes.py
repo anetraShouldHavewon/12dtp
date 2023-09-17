@@ -34,7 +34,7 @@ def fetch_all_result_list(query, constraint):
         return_list.append(item[0])
     return return_list
 
-#look into simplifying
+
 def genre_id_list_from_genre_name_list(genre_list):
     # getting a list of ids of genres from a list of genres names
     # and a alphabetically sorted capitalized list of genre names
@@ -173,23 +173,65 @@ def home():
 
 @app.route("/movie_info/<int:id>")
 def movie_info(id):
-    movie_info = sql("fetchone", "SELECT * FROM Movie WHERE id = ?", id)
-    # handles errors by redirecting to 404 error page
-    if movie_info is None:
+    # 404 ERRORS
+    # handles nonexistant urls by redirecting to 404 error page
+    # Next bit of code evaluates if the movie id exists in the database.
+    movie_info = sql("fetchall", "SELECT * FROM Movie WHERE id = ?", id)
+    if len(movie_info) == 0:
         abort(404)
+    # Next bit of code checks for rows in the Movie database where there is a
+    # valid value for the id column but no valid value for the title
+    # column. This means that
+    # there is no substantial information about a movie
+    # within the column containing a valid value for the id column
+    # Thus there is no information to display and the page does not exist
+    title = sql("fetchone", "SELECT title FROM Movie WHERE id = ?",
+                id)[0]
+    if title is None:
+        abort(404)
+    # MOVIE INFORMATION
+    # Must retrieve information by individual columns
+    # because the relative positions to each other will change
+    # thus I cannot write a fetchall query and then use indexes
+    # to get information from a particular column
+    release_year = sql("fetchone", "SELECT release_year FROM "
+                       "Movie WHERE id = ?", id)[0]
+    film_poster = sql("fetchone", "SELECT film_poster FROM Movie WHERE id = ?",
+                      id)[0]
+    audience_rating = sql("fetchone", "SELECT audience_rating FROM Movie WHERE"
+                          " id = ?", id)[0]
+    length = sql("fetchone", "SELECT length FROM Movie WHERE id = ?",
+                 id)[0]
+    use_of_tropes_rating = sql("fetchone", "SELECT use_of_tropes_rating FROM "
+                               "Movie WHERE id = ?", id)[0]
+    use_of_tropes_description = sql("fetchone", "SELECT"
+                                    " use_of_tropes_description FROM Movie"
+                                    " WHERE id = ?", id)[0]
+    moral_ambiguity_rating = sql("fetchone", "SELECT moral_ambiguity_rating"
+                                 " FROM Movie WHERE id = ?", id)[0]
+    moral_ambiguity_description = sql("fetchone", "SELECT"
+                                      " moral_ambiguity_description FROM Movie"
+                                      " WHERE id = ?", id)[0]
+    description = sql("fetchone", "SELECT description FROM Movie WHERE id = ?",
+                      id)[0]
+    movie_info = [title, audience_rating, release_year, use_of_tropes_rating,
+                  use_of_tropes_description, moral_ambiguity_rating,
+                  moral_ambiguity_description, film_poster, description,
+                  length]
     # getting the NZ film ratings of each movie
     # getting the description of the NZ film rating assigned to
     # the particular film so that it is clear that an R16 film is for children
     # over 16
-    film_rating_id = movie_info[3]
+    film_rating_id = sql("fetchone", "SELECT film_rating FROM Movie "
+                         "WHERE id = ?", id)[0]
     film_rating = sql("fetchone",
                       "SELECT name FROM NZ_film_classification_rating WHERE "
-                      "id = ?", film_rating_id)
+                      "id = ?", film_rating_id)[0]
     film_rating_description = sql("fetchone", "SELECT description FROM "
                                   "NZ_film_classification_rating WHERE id = ?",
-                                  film_rating_id)
+                                  film_rating_id)[0]
     film_rating_info = [film_rating, film_rating_description]
-    #more explanation
+    # more explanation
     # Getting the names of the actors and
     # directors associated with a film
     movie_people_id = sql("fetchall",
@@ -219,9 +261,13 @@ def movie_info(id):
         if person_type_id == 2:
             directors_list.append(person_name)
 
+    colour_index = id % 3
+    print(colour_index)
+
     return render_template("m_movie_info.html", movie_info=movie_info,
                            people_info=people_info,
-                           film_rating_info=film_rating_info)
+                           film_rating_info=film_rating_info,
+                           colour_index=colour_index)
 
 
 @app.route("/genre")
@@ -237,26 +283,31 @@ def genre():
     # Information about each genre's description is retrieved
     # To add information about each genre's description
     # to the genre_movie_list where a list of information about the movies in
-    # each genre, I temporarily put the genre_descriptions dictionary into a
-    # list. I then added this processed_genre_description list
+    # each genre, I then appended this list of genre descriptions
     # to the genre_movie_list
-    genre_descriptions = {}
+    genre_descriptions = []
     for index, id in enumerate(genre_id_list):
-        genre_description = sql("fetchone", "SELECT description FROM Genre"
-                                " WHERE id = ?", id)
-        genre_descriptions[genre_name_list[index]] = genre_description
-    processed_genre_descriptions = [genre_descriptions]
+        genre_description = sql("fetchone", "SELECT description FROM "
+                                "Genre WHERE id = ?", id)
+        genre_descriptions.append(genre_description[0])
     genre_movie_list = genre_movies(genre_id_list, genre_name_list)
-    genre_movie_list.extend(processed_genre_descriptions)
+    genre_movie_list.append(genre_descriptions)
+    genre_movie_list.append(genre_name_list)
 
     return render_template("m_genre.html", genre_info=genre_movie_list)
 
 
 @app.route("/cinema_eras")
 def cinema_eras():
-    golden_age_of_hollywood = {}
-    new_age_of_hollywood = {}
-    blockbuster_age_of_hollywood = {}
+    # getting the information about movies needed for display in
+    # galleries (their title, poster, rotten tomatoes rating, length)
+    # and separating based on eras of tilm
+    # Golden Age of Hollywood: all films made up until 1960
+    # New Age of Hollywood: 1961 to 1975
+    # Blockbuster Age of Hollywood: all films made after 1975
+    golden_age_of_hollywood = []
+    new_age_of_hollywood = []
+    blockbuster_age_of_hollywood = []
     cinema_eras_dict = {"Golden Age Of Hollywood": golden_age_of_hollywood,
                         "New Age Of Hollywood": new_age_of_hollywood,
                         "Blockbuster Age Of Hollywood":
@@ -264,7 +315,6 @@ def cinema_eras():
     for key in cinema_eras_dict:
         if key == "Golden Age Of Hollywood":
             movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE "
-                                                  "release_year >= 1910 AND "
                                                   "release_year <= 1960", None)
         elif key == "New Age Of Hollywood":
             movie_id_list = fetch_all_result_list("SELECT id FROM Movie WHERE "
@@ -275,6 +325,7 @@ def cinema_eras():
                                                   "release_year > 1975", None)
         cinema_eras_dict[key] = movie_gallery_info_from_movie_id_list(
             movie_id_list)
+        cinema_eras_dict[key].append(movie_id_list)
 
     return render_template("m_cinema_eras.html",
                            cinema_eras_dict=cinema_eras_dict)
@@ -282,27 +333,35 @@ def cinema_eras():
 
 @app.route("/rotten_tomatoes")
 def rotten_tomatoes():
-    great_score = {}
-    good_score = {}
-    bad_score = {}
+    # getting the information about movies needed for display in
+    # galleries (their title, poster, rotten tomatoes rating, length)
+    # and separating based on each rotten tomato score of tilm
+    # Great Score: rotten tomato rating above 75
+    # Good Score: rotten tomato rating between 60 and 75
+    # Bad Score: rotten tomato rating below 60
+    great_score = []
+    good_score = []
+    bad_score = []
     rtr_dict = {"Great Score": great_score,
                 "Good Score": good_score,
                 "Bad Score": bad_score}
     for key in rtr_dict:
         if key == "Great Score":
-            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie "
                                                   "WHERE audience_rating >= "
                                                   "75", None)
         elif key == "Good Score":
-            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie "
                                                   "WHERE audience_rating < 75 "
                                                   "AND audience_rating >= 60",
                                                   None)
         elif key == "Bad Score":
-            movie_id_list = fetch_all_result_list("SELECT title FROM Movie "
+            movie_id_list = fetch_all_result_list("SELECT id FROM Movie "
                                                   "WHERE audience_rating < 60",
                                                   None)
-        rtr_dict[key] = movie_gallery_info_from_movie_id_list(movie_id_list)
+        rtr_dict[key] = movie_gallery_info_from_movie_id_list(
+            movie_id_list)
+        rtr_dict[key].append(movie_id_list)
 
     return render_template("m_rotten_tomatoes.html",
                            rotten_tomatoes_dict=rtr_dict)

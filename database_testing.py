@@ -98,7 +98,7 @@ for score_range in rtr_list:
         movies = sql(
             "fetchall", "SELECT title FROM Movie WHERE audience_rating >= 75",
             None)
-        print(movies)
+        #(movies)
     #elif score_range == good_score:
         #movies = sql("fetchall","SELECT title FROM Movie WHERE film_rating < 75 AND film_rating >= 60", None)
     #elif score_range == bad_score:
@@ -111,13 +111,10 @@ for score_range in rtr_list:
     score_range = gallery_img_info_from_movie_list(
         movie_list, score_range)
         
-print(
-    rtr_dict["Great Score"])
+#print(
+    #rtr_dict["Great Score"])
 
-a = [1,2,3]
-b = {"why": 
-     "life"}
+title = sql("fetchone", "SELECT title FROM Movie WHERE id = ?",1)
+film_rating_id = sql("fetchone", "SELECT film_rating FROM Movie WHERE id = ?", 1)[0]
+print(title)
 
-for key in b:
-    hh = b[key]
-    print(hh)
