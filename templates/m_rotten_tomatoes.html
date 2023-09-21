@@ -6,22 +6,22 @@
     <div class = "nav">
         <div class = "nav-sections">
             <a href = "#Great Score">
-                <h2 class = "alt-nav-section-title">Over 75%</h2>
-                <h3 class = "nav-section-description"><mark>For all the deeply pretentious artefacts changed title</mark></h3>
+                <h2 class = "nav-section-title">Over 75%</h2>
+                <h3 class = "nav-section-description">For all the deeply pretentious artefacts</h3>
             </a>
         </div>
 
         <div class = "nav-sections">
             <a href = "#Good Score">
-                <h2 class = "alt-nav-section-title">Between 60% to 75%</h2>
-                <h3 class = "nav-section-description"><mark>For a good time</mark></h3>
+                <h2 class = "nav-section-title">Between 60% to 75%</h2>
+                <h3 class = "nav-section-description">For a good time</h3>
             </a>
         </div>
 
         <div class = "nav-sections">
             <a href = "#Bad Score">
-                <h2 class = "alt-nav-section-title">Less than 60%</h2>
-                <h3 class = "nav-section-description"><mark>The unpopular, the badly marketed or The Rooms</mark></h3>
+                <h2 class = "nav-section-title">Less than 60%</h2>
+                <h3 class = "nav-section-description">The unpopular, the badly marketed or The Rooms</h3>
             </a>
         </div>
     </div>
@@ -29,11 +29,13 @@
     <div class = "sections">
         <div class = "rtr-header">
             <div class = "header-text">
-                <h2>Search By</h2>
+                <h2>Search By...</h2>
                 <h2>ROTTEN TOMATO</h2>
                 <h2>SCORES</h2>
             </div>
         </div>
+        <h3 class = "reference-alt-rtr"><mark>Photo by <a href="https://unsplash.com/@corina_rainer_?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Corina Rainer</a> on <a href="https://unsplash.com/photos/9FDI-_E29fk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+        </mark></h3>
 
         {% for rotten_tomatoes_range, movie_list in rotten_tomatoes_dict.items() %}
             {% set movie_names_list = movie_list[0] %}

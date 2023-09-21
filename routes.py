@@ -3,6 +3,8 @@ import sqlite3
 
 app = Flask(__name__)
 
+# checked with flake8 extension on vscode and pep8 checker website:
+# https://www.codewof.co.nz/style/python3/ 
 # opening connection to sql database, evaluating if the query used is
 # a fetchone or fetchall and returning the result of the query
 # this function deals with getting data from the "Movie_Database_1.db"
@@ -28,6 +30,8 @@ def sql(fetch_status, query, constraint):
 
 
 def fetch_all_result_list(query, constraint):
+    # rearranging the resulting tuple from a query into a list
+    # and returning that list
     return_list = []
     query_result = sql("fetchall", query, constraint)
     for item in query_result:
@@ -168,7 +172,7 @@ def home():
         final_movie_rtr_list.extend(movie_gallery_info[3])
 
     return render_template("m_home.html", genre_movie_info=genre_movie_dict,
-                           new_release_info=new_releases)
+                           new_release_info=new_releases, title = "Home")
 
 
 @app.route("/movie_info/<int:id>")
@@ -374,3 +378,4 @@ def error(e):
 
 if __name__ == "__main__":
     app.run(debug=True)
+

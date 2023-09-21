@@ -16,8 +16,8 @@
             {% for index in range(genre_name_list|length) %}
             <div class = "nav-sections">
                 <a href = "#{{genre_name_list[index]}}">
-                    <h2 class = "alt-nav-section-title">{{genre_name_list[index]}}</h2>
-                    <h3 class = "nav-section-description"><mark>{{genre_description_list[index]}}</mark></h3>
+                    <h2 class = "nav-section-title">{{genre_name_list[index]}}</h2>
+                    <h3 class = "nav-section-description">{{genre_description_list[index]}}</h3>
                 </a>
             </div>
             {% endfor %}
@@ -32,6 +32,10 @@
                         <h2>GENRE</h2>
                     </div>
                 </div>
+
+                <h3 class = "reference-alt"><mark>Photo by <a href="https://unsplash.com/@shimikumi32?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kumiko SHIMIZU</a> on <a href="https://unsplash.com/photos/_PshNniKRy8?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+                </mark></h3>
+                
                 {% else %}
                     {% set genre = genre_name_list[index - 1] %}
                     <a id = "{{genre}}">

@@ -1,10 +1,8 @@
+/*General*/
 body{
     background-color:  #0c0c0e;
 }
 
-h1{
-    color: #FAF9F6;
-}
 h2{
     color: #FAF9F6;
 }
@@ -23,13 +21,15 @@ ul li{
 }
 
 /*Navigation Bar*/
-/* Link Style: https://css-irl.info/animating-underlines/*/
 nav{
     background-color: #28282B;
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1;
+    margin-top: -8vh;
+    margin-left:-2vh;
+    
 }
 
 nav li{
@@ -58,6 +58,8 @@ nav li a:focus{
     background-position: 80% 35%;
     position: relative;
     margin: 0;
+    margin-left:-2vh;
+    z-index: -1;
 }
 
 .header-text{
@@ -67,13 +69,28 @@ nav li a:focus{
     position: absolute;
     top: 6.5vh;
     left: 10vw;
-}
-
-.header-text h1{
     color: white;
     line-height: 10vh;
 }
 
+
+.reference{
+    text-align: right;
+    margin-top: -4vh;
+    font-family: 'dense-regular', sans-serif;
+    font-size: 3vh;
+    color: black;
+}
+
+.reference mark{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.reference mark a{
+    color:#7d47e8;
+    text-decoration: none;
+    z-index: 1;
+}
 /*Home Page*/
 .home-sections{
     margin: auto;
@@ -144,14 +161,16 @@ nav li a:focus{
 .movie img{
     width: 25vh;
     height: 37.5vh;
+    margin-bottom: -8vh;
 }
 
 .movie h3{
     align-content: center;
     margin-bottom: -8vh;
     white-space: normal;
-    line-height: 2vh;
-    font-size: 2vh;
+    line-height: 2.5vh;
+    font-size: 3vh;
+    text-align: center;
 }
 
 .movie-gallery-title{
@@ -300,41 +319,37 @@ nav li a:focus{
 .nav-sections a{
     text-decoration: none;
 }
-.nav-section-title{
-    font-family: 'scheherazade-bold', sans-serif;
-    font-size: 2.3vh;
-    padding-left: 2vw;
-}
 
 /*mark styling: https://www.abeautifulsite.net/posts/a-clever-way-to-style-the-mark-element/*/
-.alt-nav-section-title{
+.nav-section-title{
     font-family: 'scheherazade-bold', sans-serif;
-    font-size: 2.1vh;
+    font-size: 2.9vh;
+    text-align: center;
     color: white;
     padding: 1vh;
-    margin-left: 2vw;
+    width: 8vw;
+    margin-left: 1.5vw;
     border-radius: 1.5em 0;
     background: linear-gradient(-100deg, #4888e1, #7d47e8);
 }
 
-.nav-sections:hover .alt-nav-section-title,
-.nav-sections:focus .alt-nav-section-title{
+.nav-sections:hover .nav-section-title,
+.nav-sections:focus .nav-section-title{
     border: 0.1vw solid white
 }
 
 .nav-section-description{
     font-family: 'dense-regular', sans-serif;
-    padding-left: 2vw;
+    font-size: 2.8vh;
+    margin-left: 2vw;
+    padding: 0.5vh;
+    border-radius: 0.5vh;
+    color: white;
 }
 
-.nav-section-description mark{
-    background-color: #6016f5;
-    color: white; 
-}
-
-.nav-sections:hover .nav-section-description mark,
-.nav-sections:focus .nav-section-description mark{
-    background-color: white;
+.nav-sections:hover .nav-section-description,
+.nav-sections:focus .nav-section-description{
+    background-color: rgba(255, 255, 255, 0.8);
     color: #4888e1;
 }
 
@@ -354,16 +369,37 @@ nav li a:focus{
 .genre-header{
     height:80vh;
     width: 70vw;
-    background-image: url(/static/photos/develop_img.jpg);
-    background-size: 40vh;
+    background-image: linear-gradient(rgba(179, 169, 199, 0.4),rgba(179, 169, 199, 0.4)), url(/static/photos/develop_img.jpg);
+    background-size: 80vh;
     background-position: 80% 35%;
     margin-left: 0vw;
     position: relative;
-    top: 5vh;
+    top: -5vh;
+    z-index: -1;
 }
 
 .genre-header h2{
     color: #3ba493;
+}
+
+.reference-alt{
+    text-align: right;
+    margin-top: -10vh;
+    margin-right: 25vh;
+    font-family: 'dense-regular', sans-serif;
+    font-size: 3vh;
+    color: black;
+    z-index: 1;
+}
+
+.reference-alt mark{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.reference-alt mark a{
+    color:#8e3fd3;
+    text-decoration: none;
+    z-index: 1;
 }
 
 .era-header{
@@ -374,7 +410,8 @@ nav li a:focus{
     background-position: 60% 35%;
     margin-left: 0vw;
     position: relative;
-    top: 5vh;
+    top: -5vh;
+    z-index: -1;
 }
 
 .era-header h2{
@@ -390,11 +427,33 @@ nav li a:focus{
     margin-left: 0vw;
     position: relative;
     top: 5vh;
+    z-index: -1;
+    margin-bottom: 13vh;
 }
 
 .rtr-header h2{
     color: white;
     margin: 1vh;
+}
+
+.reference-alt-rtr{
+    text-align: right;
+    margin-top: -15vh;
+    margin-right: 25vh;
+    font-family: 'dense-regular', sans-serif;
+    font-size: 3vh;
+    color: black;
+    z-index: 1;
+}
+
+.reference-alt-rtr mark{
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.reference-alt-rtr mark a{
+    color:#8e3fd3;
+    text-decoration: none;
+    z-index: 1;
 }
 
 .sections .header-text{
@@ -428,7 +487,7 @@ nav li a:focus{
 
 /*movie_info*/
 .movie-info-container{
-    display: grid;
+    display: grid; 
     grid-template-columns: 1fr 7fr;
     grid-gap: 2vw;
 }
@@ -464,16 +523,17 @@ nav li a:focus{
 
 .movie-info-poster h3{
     font-family: 'dense-regular', sans-serif;
-    font-size: 2vh;
+    font-size: 2.5vh;
     margin: 0vh;
     font-weight: lighter;
 }
 
 .movie-info-poster h3 mark{
     font-weight: bold;
-    background-color: rgba(207, 207, 235, 0.7);
+    background-color: rgba(207, 207, 235, 0);
     color: white;
-    font-size: 2.1vh;
+    text-decoration: underline;
+    font-size: 3vh;
 }
 
 .movie-info-poster .pink{
@@ -524,13 +584,6 @@ nav li a:focus{
     display: inline;
 }
 
-.list-title h3 mark{
-    font-weight: bold;
-    background-color: rgba(207, 207, 235, 1);
-    color: white;
-    font-size: 2.5vh;
-}
-
 .small-placards{
     display: flex;
     flex-direction: row;
@@ -574,33 +627,53 @@ footer h3{
     color: #9a9aa5;
 }
 
+footer h3 a{
+    color:#8e3fd3;
+}
+
 /*Error*/
 .error-img{
     background-image: linear-gradient(rgba(179, 169, 199, 0.2),rgba(179, 169, 199, 0.2)), url(/static/photos/404page.jpg);
-    height: 80%;
+    height: 100%;
     background-size: cover;
     background-position: 70% 45%;
     position: relative;
-    margin-top: -14vh;
+    margin-top: -10vh;
 }
 
+.error{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .error h1{
     font-family: 'flamingo-licht', sans-serif;
     font-size: 20vh;
     text-align: center;
     color: #3ba493;
-    padding-top: 10vh;
+    margin-top: 15vh;
+    margin-bottom: 12vh;
 }
 
 .error h2{
-    font-family: 'dense-regular', sans-serif;
-    font-size: 3vh;
+    font-family: 'flamingo-licht', sans-serif;
+    font-size: 4vh;
     text-align: center;
-    color: black;
+    color: rgb(39, 28, 74);
 }
 
-.error h2 a{
-    text-decoration: underline;
-    text-decoration-color: #3ba493;
-    color: black;
+.error button{
+    font-family: 'dense-regular', sans-serif;
+    font-size: 4vh;
+    text-align: center;
+    background-color: #3ba492dd;
+    padding: 3vh 4vw;
+    cursor: pointer;
+    border: none;
+    border-radius: 1vh;
+}
+
+.error button:hover{
+    background: #3ba493;
+    border: 0.1vh solid white;
 }
